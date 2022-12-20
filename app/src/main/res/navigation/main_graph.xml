@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/landingFragment">
+
+    <fragment
+        android:id="@+id/landingFragment"
+        android:name="net.edara.edaracash.presentation.LandingFragment"
+        android:label="fragment_landing"
+        tools:layout="@layout/fragment_landing">
+        <action
+            android:id="@+id/action_landingFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="net.edara.edaracash.presentation.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login">
+
+
+        <action
+            android:id="@+id/action_loginFragment_to_chooseOrderTypeFragment"
+            app:destination="@id/chooseOrderTypeFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/insuranceFragment"
+        android:name="net.edara.edaracash.presentation.insurance_search.InsuranceFragment"
+        android:label="fragment_insurance"
+        tools:layout="@layout/fragment_insurance">
+        <action
+            android:id="@+id/action_insuranceFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/servicesFragment"
+        android:name="net.edara.edaracash.presentation.service_search.ServicesFragment"
+        android:label="ServicesFragment">
+        <action
+            android:id="@+id/action_servicesFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="net.edara.edaracash.presentation.search_result.ResultFragment"
+        android:label="fragment_result"
+        tools:layout="@layout/fragment_result">
+        <action
+            android:id="@+id/action_resultFragment_to_editWorkOrderFragment"
+            app:destination="@id/editWorkOrderFragment"
+            app:popUpTo="@id/resultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editWorkOrderFragment"
+        android:name="net.edara.edaracash.presentation.edit_work_order.EditWorkOrderFragment"
+        android:label="EditWorkOrderFragment">
+        <argument
+            android:name="workOrder"
+            app:argType="net.edara.edaracash.models.WorkOrder" />
+        <action
+            android:id="@+id/action_editWorkOrderFragment_to_paymentFragment"
+            app:destination="@id/paymentFragment" />
+        <action
+            android:id="@+id/action_editWorkOrderFragment_to_invoiceFragment"
+            app:destination="@id/invoiceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentFragment"
+        android:name="net.edara.edaracash.presentation.pay_fragment.PaymentFragment"
+        android:label="PaymentFragment">
+        <argument
+            android:name="workOrder"
+            app:argType="net.edara.edaracash.models.WorkOrder" />
+        <action
+            android:id="@+id/action_paymentFragment_to_invoiceFragment"
+            app:destination="@id/invoiceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chooseOrderTypeFragment"
+        android:name="net.edara.edaracash.presentation.ChooseOrderTypeFragment"
+        android:label="ChooseOrderTypeFragment" >
+        <action
+            android:id="@+id/action_chooseOrderTypeFragment_to_insuranceFragment"
+            app:destination="@id/insuranceFragment" />
+        <action
+            android:id="@+id/action_chooseOrderTypeFragment_to_servicesFragment"
+            app:destination="@id/servicesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/invoiceFragment"
+        android:name="net.edara.edaracash.presentation.invoice.InvoiceFragment"
+        android:label="fragment_invoice"
+        tools:layout="@layout/fragment_invoice" >
+        <argument
+            android:name="order"
+            app:argType="net.edara.edaracash.models.WorkOrder" />
+    </fragment>
+</navigation>

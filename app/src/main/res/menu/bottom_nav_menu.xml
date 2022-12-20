@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/servicesFragment"
+        android:enabled="true"
+        android:icon="@drawable/service_tool"
+        android:title="@string/privet_service"/>
+    <item
+        android:id="@+id/insuranceFragment"
+        android:enabled="true"
+        android:icon="@drawable/insurance_tool"
+        android:title="@string/insurance"/>
+</menu>
