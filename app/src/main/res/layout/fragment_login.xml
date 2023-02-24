@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="net.edara.edaracash.presentation.login.LoginViewModel" />
+            type="net.edara.edaracash.features.login.LoginViewModel" />
     </data>
 <androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/mid_margin"
-        tools:context=".presentation.login.LoginFragment">
+        tools:context=".features.login.LoginFragment">
 
         <ImageView
             android:id="@+id/imageView"
@@ -68,7 +68,9 @@
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
+            app:cornerRadius="@dimen/button_radius"
+
             android:id="@+id/login_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

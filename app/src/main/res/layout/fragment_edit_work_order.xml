@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="workOrder"
-            type="net.edara.edaracash.models.WorkOrder" />
+            name="services"
+            type="net.edara.domain.models.getAllService.GetAllServiceResonse.Data.Service" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:layout_marginHorizontal="@dimen/mid_margin"
             android:layout_marginTop="@dimen/mid_margin"
-            tools:context=".presentation.edit_work_order.EditWorkOrderFragment">
+            tools:context=".features.edit_work_order.EditWorkOrderFragment">
 
 
             <TextView
@@ -27,9 +27,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
 
+                android:text=""
                 android:textStyle="bold"
-                app:clientName="@{workOrder}"
-                app:layout_constraintBottom_toTopOf="@+id/analysis_code"
+                app:layout_constraintBottom_toTopOf="@+id/unit_no"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -39,12 +39,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/small_margin"
+                android:text=""
                 android:textStyle="bold"
-                app:analysesCode="@{workOrder}"
-                app:layout_constraintBottom_toTopOf="@+id/labor_cost"
+                app:layout_constraintBottom_toBottomOf="@+id/unit_no"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/unit_no"
-                app:layout_constraintTop_toBottomOf="@+id/clint_name" />
+                app:layout_constraintTop_toTopOf="@+id/unit_no" />
 
             <TextView
                 android:id="@+id/unit_no"
@@ -52,21 +52,34 @@
                 android:layout_height="wrap_content"
 
                 android:layout_marginVertical="@dimen/small_margin"
+                android:text=""
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/labor_cost"
+                app:layout_constraintBottom_toTopOf="@+id/work_orders"
                 app:layout_constraintEnd_toStartOf="@id/analysis_code"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/clint_name"
-                app:unitNumber="@{workOrder}" />
+                app:layout_constraintTop_toBottomOf="@+id/clint_name" />
+
+            <TextView
+                android:id="@+id/work_orders"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_marginVertical="@dimen/small_margin"
+                android:text="@string/work_order"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/labor_cost"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/unit_no" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/labor_cost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/spare_parts"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/unit_no"
+                app:layout_constraintTop_toBottomOf="@+id/work_orders"
                 app:layout_constraintVertical_bias="0.04"
                 app:startIconDrawable="@drawable/worker">
 
@@ -77,7 +90,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
                     android:maxLines="1"
-                    android:text="@{String.valueOf(workOrder.laborCost)}"
+                    android:text="@{services.amount}"
                     tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -86,6 +99,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+
+                app:layout_constraintBottom_toTopOf="@+id/horizontal_line"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/labor_cost"
                 app:startIconDrawable="@drawable/gear">
@@ -97,7 +113,7 @@
                     android:imeOptions="actionDone"
                     android:inputType="numberDecimal"
                     android:maxLines="1"
-                    android:text="@{String.valueOf(workOrder.spareParts)}"
+
                     tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -119,6 +135,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/tax"
                 app:layout_constraintEnd_toEndOf="parent"
 
                 app:layout_constraintStart_toStartOf="parent"
@@ -132,7 +149,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
                     android:maxLines="1"
-                    app:doubleText="@{workOrder.extraCharge}"
+
                     tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -142,8 +159,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
 
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/discount"
+                app:layout_constraintEnd_toEndOf="parent"
 
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/extra_charge"
                 app:startIconDrawable="@drawable/ic_baseline_attach_money_24">
 
@@ -154,7 +173,7 @@
                     android:imeOptions="actionDone"
                     android:inputType="numberDecimal"
                     android:maxLines="1"
-                    app:doubleText="@{workOrder.tax}"
+
 
                     tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -164,6 +183,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/total"
+                app:layout_constraintEnd_toEndOf="parent"
+
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tax"
                 app:startIconDrawable="@drawable/ic_baseline_discount_24">
@@ -175,7 +197,7 @@
                     android:imeOptions="actionDone"
                     android:inputType="numberDecimal"
                     android:maxLines="1"
-                    app:doubleText="@{workOrder.discount}"
+
                     tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -184,9 +206,10 @@
                 android:id="@+id/total"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/big_margin"
+                android:layout_marginVertical="@dimen/mid_margin"
                 android:text="@string/total"
                 android:textSize="22sp"
+                app:layout_constraintBottom_toTopOf="@+id/cancel_button"
 
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/total_price"
@@ -197,17 +220,18 @@
                 android:id="@+id/total_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/big_margin"
+                android:text="@{services.amount}"
+
                 android:textAlignment="viewEnd"
 
                 android:textSize="22sp"
-
-                app:doubleText="@{workOrder.total}"
+                app:layout_constraintBottom_toBottomOf="@+id/total"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/total"
-                app:layout_constraintTop_toBottomOf="@+id/discount" />
+                app:layout_constraintTop_toTopOf="@+id/total" />
 
-            <Button
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/save_changes"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -215,35 +239,40 @@
                 android:backgroundTint="@color/md_theme_light_secondaryContainer"
                 android:text="@string/save"
                 android:textColor="@color/md_theme_light_onSecondaryContainer"
+                app:cornerRadius="@dimen/button_radius"
+                app:layout_constraintBottom_toBottomOf="@+id/cancel_button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/cancel_button"
                 app:layout_constraintTop_toTopOf="@+id/cancel_button" />
 
-            <Button
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/cancel_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/mid_margin"
+                android:layout_marginTop="@dimen/small_margin"
                 android:layout_marginEnd="@dimen/small_margin"
                 android:backgroundTint="@color/md_theme_light_tertiaryContainer"
                 android:text="@string/cancel"
                 android:textColor="@color/md_theme_light_onSecondaryContainer"
+                app:cornerRadius="@dimen/button_radius"
                 app:layout_constraintBottom_toTopOf="@+id/pay_button"
                 app:layout_constraintEnd_toStartOf="@+id/save_changes"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/total" />
 
-            <Button
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/pay_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/mid_margin"
                 android:text="@string/save_and_proceed_to_payment"
+                app:cornerRadius="@dimen/button_radius"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cancel_button"
-                app:layout_constraintVertical_bias="0.1" />
+                app:layout_constraintTop_toBottomOf="@+id/cancel_button" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

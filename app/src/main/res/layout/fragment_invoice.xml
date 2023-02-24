@@ -7,390 +7,601 @@
 
         <variable
             name="order"
-            type="net.edara.edaracash.models.WorkOrder" />
+            type="net.edara.domain.models.getAllService.GetAllServiceResonse.Data.Service" />
     </data>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.invoice.InvoiceFragment">
+        android:fillViewport="true"
+        tools:context=".features.invoice.InvoiceFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="?attr/colorSecondaryContainer"
+            android:paddingHorizontal="@dimen/mid_margin">
 
-            <ImageView
-                android:id="@+id/imageView3"
+            <androidx.cardview.widget.CardView
+
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_marginHorizontal="@dimen/big_margin"
-                android:contentDescription="@string/edara_property_management_logo"
-                app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+                android:layout_height="match_parent"
+                app:cardCornerRadius="@dimen/button_radius"
+                android:layout_marginVertical="@dimen/mid_margin"
+
+                app:contentPaddingBottom="160dp"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.5"
-                app:srcCompat="@drawable/logo" />
-
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/big_margin"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toTopOf="@+id/radio"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView3">
+                app:layout_constraintTop_toTopOf="parent">
 
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/linearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/small_margin"
+                    android:background="@android:color/white"
+                    android:paddingBottom="@dimen/big_margin">
 
-                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/logo"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:contentDescription="@string/edara_property_management_logo"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/logo"
+                        app:tint="?attr/colorOnSurface" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/service"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/service"
+                        android:id="@+id/view1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@{order.title}"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:text="@string/seprator"
+                        android:maxLines="1"
+                        android:textSize="@dimen/receipt_small"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/logo" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="9dp"
+                        android:text="@string/date"
+                        android:textColor="?attr/colorOnBackground"
+                        android:textSize="@dimen/receipt_big"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/textView2"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/view1" />
+
+
+                    <TextView
+                        android:id="@+id/textView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/clint_name"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:text="@string/reciept_no"
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="@dimen/receipt_normal"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/textView"
+
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/date" />
 
                     <TextView
-                        android:id="@+id/clint_name"
-                        android:layout_width="match_parent"
+                        android:id="@+id/reciept"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@{order.clientName}"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="@dimen/receipt_normal"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/textView2"
+                        app:layout_constraintTop_toTopOf="@+id/textView2" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginBottom="@dimen/small_margin"
+                        android:text="@string/user"
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="@dimen/receipt_normal"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/textView5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+                    <TextView
+                        android:id="@+id/user"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="@dimen/receipt_normal"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/textView"
+                        app:layout_constraintTop_toTopOf="@+id/textView" />
+
+
+                    <TextView
+                        android:id="@+id/textView5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/project"
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="@dimen/receipt_normal"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/textView4"
+
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+                    <TextView
+                        android:id="@+id/project"
+
+                        android:layout_width="0dp"
+
+                        android:layout_height="wrap_content"
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="@dimen/receipt_normal"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView5"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/textView5"
+                        app:layout_constraintTop_toTopOf="@+id/textView5" />
+
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/unit_code"
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="@dimen/receipt_normal"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/textView7"
+
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+                    <TextView
+                        android:id="@+id/unit_code"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="5dp"
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="@dimen/receipt_normal"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView4"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/textView4"
+                        app:layout_constraintTop_toTopOf="@+id/textView4" />
+
+
+                    <TextView
+                        android:id="@+id/textView7"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/unit_number"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="@dimen/receipt_normal"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/textView8"
+                        app:layout_constraintStart_toStartOf="parent"
+
+                        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
                     <TextView
                         android:id="@+id/unit_no"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@{String.valueOf(order.unitNo)}"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:orientation="horizontal">
+                        android:layout_marginTop="5dp"
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="@dimen/receipt_normal"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView7"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/textView7"
+                        app:layout_constraintTop_toTopOf="@+id/textView7" />
 
                     <TextView
+                        android:id="@+id/textView8"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/analysis_code"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+
+                        android:layout_marginBottom="@dimen/small_margin"
+                        android:text="@string/collection_no"
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="@dimen/receipt_normal"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/view2"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
                     <TextView
-                        android:id="@+id/analysis_code"
+                        android:id="@+id/collection"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="4dp"
+                        android:textColor="?attr/colorOutline"
+                        android:textSize="@dimen/receipt_normal"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView8"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/textView8"
+                        app:layout_constraintTop_toTopOf="@+id/textView8" />
+
+                    <TextView
+                        android:id="@+id/view2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@{String.valueOf(order.analysisCode)}"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:text="@string/seprator"
+                        android:maxLines="1"
+                        app:layout_constraintBottom_toTopOf="@id/textView6"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:textSize="@dimen/receipt_small"
 
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_margin="@dimen/small_margin"
-                    android:background="?attr/colorOutline" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:orientation="horizontal">
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/textView6"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/labor_cost_"
-                        android:textSize="18sp" />
+                        android:layout_marginVertical="@dimen/small_margin"
+                        android:text="@string/service_"
+                        android:textSize="@dimen/receipt_big"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/services"
+                        app:layout_constraintEnd_toStartOf="@id/textView9"
+                        app:layout_constraintHorizontal_weight="3"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/view2" />
 
                     <TextView
-                        android:id="@+id/labor_cost"
+                        android:id="@+id/textView9"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/amount"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/receipt_big"
+                        android:textStyle="bold"
+
+                        app:layout_constraintBottom_toBottomOf="@+id/textView6"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_weight="2"
+                        app:layout_constraintStart_toEndOf="@+id/textView6"
+                        app:layout_constraintTop_toTopOf="@+id/textView6" />
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/services"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp"
-                        app:doubleText="@{order.laborCost}" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:orientation="horizontal">
+                        android:layout_marginVertical="@dimen/small_margin"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintBottom_toTopOf="@id/view3"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/textView6"
+                        tools:listitem="@layout/service_item" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/spare_parts_"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/spare_parts"
+                        android:id="@+id/view3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp"
-                        app:doubleText="@{order.spareParts}" />
 
-                </LinearLayout>
+                        android:text="@string/seprator"
+                        android:maxLines="1"
+                        android:textSize="@dimen/receipt_small"
 
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/services" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/textView10"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/tax_"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/tax"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp"
-                        app:doubleText="@{order.tax}" />
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/extra_charge_"
-                        android:textSize="18sp" />
+                        android:layout_marginTop="@dimen/small_margin"
+                        android:text="@string/extra_charge"
+                        android:textAlignment="textEnd"
+                        android:textSize="@dimen/receipt_normal"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/textView11"
+                        app:layout_constraintEnd_toEndOf="@+id/textView11"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/view3"
+                        app:layout_constraintVertical_bias="0.97" />
 
                     <TextView
                         android:id="@+id/extra_charge"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp"
-                        app:doubleText="@{order.extraCharge}" />
 
-                </LinearLayout>
+                        android:layout_marginTop="2dp"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/receipt_normal"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView10"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/textView10"
+                        app:layout_constraintTop_toTopOf="@+id/textView10" />
 
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+
+                        android:id="@+id/textView11"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/discount_"
-                        android:textSize="18sp" />
+
+                        android:layout_marginVertical="@dimen/small_margin"
+                        android:text="@string/discount"
+                        android:textAlignment="textEnd"
+                        android:textSize="@dimen/receipt_normal"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/textView12"
+                        app:layout_constraintEnd_toEndOf="@+id/textView12"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
                     <TextView
                         android:id="@+id/discount"
-                        android:layout_width="match_parent"
+
+
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp"
-                        app:doubleText="@{order.discount}" />
-
-                </LinearLayout>
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textAlignment="center"
 
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_margin="@dimen/small_margin"
-                    android:background="?attr/colorOutline" />
+                        android:textSize="@dimen/receipt_normal"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView11"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/textView11"
+                        app:layout_constraintTop_toTopOf="@+id/textView11" />
 
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+
+                        android:id="@+id/textView12"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/total"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+
+                        android:text="@string/total_included_tax"
+                        android:textAlignment="textEnd"
+                        android:textSize="@dimen/receipt_normal"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/text14"
+                        app:layout_constraintEnd_toEndOf="@+id/textView6"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
                     <TextView
                         android:id="@+id/total"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/receipt_normal"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView12"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/textView12"
+                        app:layout_constraintTop_toTopOf="@+id/textView12" />
+
+
+                    <TextView
+                        android:id="@+id/text14"
+                        android:layout_marginTop="@dimen/big_margin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/notes"
+                        app:layout_constraintTop_toBottomOf="@+id/textView12"
                         android:textStyle="bold"
-                        app:doubleText="@{order.total}" />
+                        android:textSize="@dimen/receipt_small"
+                        android:text="@string/notes"/>
+                    <TextView
+                        android:id="@+id/notes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/address"
+                        app:layout_constraintTop_toBottomOf="@+id/text14"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="@dimen/big_margin"
+                        android:textSize="@dimen/receipt_small"
+                        android:text="@string/dash"/>
+                    <TextView
+                        android:textAlignment="viewStart"
+                        android:id="@+id/address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/qr_code"
+                        app:layout_constraintTop_toBottomOf="@+id/notes"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/receipt_small"
+                        android:text="@string/address"/>
 
-                </LinearLayout>
+                    <ImageView
+                        android:id="@+id/qr_code"
+                        android:layout_width="200dp"
 
+                        android:layout_height="200dp"
+                        android:contentDescription="@string/recipt_qr_code"
+ android:layout_marginVertical="@dimen/mid_margin"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/address"
+                        app:srcCompat="@drawable/reciept_qr_code" />
 
-            </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
 
-            <net.edara.edaracash.presentation.util.RadioGridGroup
+            <androidx.cardview.widget.CardView
                 android:id="@+id/radio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/small_margin"
+                android:layout_marginBottom="60dp"
+                android:backgroundTint="?attr/colorOnPrimaryContainer"
 
-                android:layout_margin="@dimen/mid_margin"
-                android:columnCount="4"
-
-                android:useDefaultMargins="true"
-                app:layout_constraintBottom_toTopOf="@+id/pay_button"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
-
-                <RadioButton
-                    android:id="@+id/insurance_settelment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:layout_columnSpan="2"
-                    android:text="@string/insurance_settlement" />
-
-                <RadioButton
-                    android:id="@+id/fawry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_rowWeight="2"
-                    android:text="@string/fawry" />
-
-                <RadioButton
-                    android:id="@+id/cash"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/cash" />
-
-                <RadioButton
-                    android:id="@+id/cheque"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/cheque" />
-
-                <RadioButton
-                    android:id="@+id/visa"
-
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/visa" />
-
-                <RadioButton
-                    android:id="@+id/cl"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-
-                    android:text="@string/cl" />
-
-                <RadioButton
-                    android:id="@+id/other"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-
-                    android:text="@string/other" />
-
-
-            </net.edara.edaracash.presentation.util.RadioGridGroup>
-
-            <Button
-                android:id="@+id/print"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/mid_margin"
-                android:layout_marginStart="@dimen/mid_margin"
-                android:layout_marginEnd="@dimen/small_margin"
-                android:backgroundTint="@color/md_theme_light_secondaryContainer"
-                android:text="@string/print_only"
-                android:textColor="@color/md_theme_light_onSecondaryContainer"
+                app:cardCornerRadius="@dimen/button_radius"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/pay_button"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/radio"
 
-                />
-
-            <Button
-                android:id="@+id/pay_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/small_margin"
-                android:layout_marginEnd="@dimen/mid_margin"
-                android:text="@string/pay"
-                app:layout_constraintBottom_toBottomOf="@id/print"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/print"
-                app:layout_constraintTop_toTopOf="@+id/print" />
+                app:layout_constraintStart_toStartOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                >
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/methode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/mid_margin"
+                        android:visibility="gone"
+                        app:cardCornerRadius="@dimen/mid_margin">
+
+                        <net.edara.edaracash.features.util.RadioGridGroup
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+
+                            android:layout_margin="@dimen/mid_margin"
+                            android:columnCount="3"
+
+                            android:useDefaultMargins="true">
+
+                            <RadioButton
+                                android:id="@+id/insurance_settelment"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                android:layout_columnSpan="2"
+                                android:text="@string/insurance_settlement" />
+
+                            <RadioButton
+                                android:id="@+id/fawry"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                android:text="@string/fawry" />
+
+                            <RadioButton
+                                android:id="@+id/geidea"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:enabled="true"
+                                android:text="@string/geidia" />
+
+                            <RadioButton
+                                android:id="@+id/cash"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/cash" />
+
+                            <RadioButton
+                                android:id="@+id/cheque"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/cheque" />
+
+                            <RadioButton
+                                android:id="@+id/visa"
+
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/visa" />
+
+                            <RadioButton
+                                android:id="@+id/cl"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+
+                                android:text="@string/cl" />
+
+                            <RadioButton
+                                android:id="@+id/other"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+
+                                android:text="@string/other" />
+
+
+                        </net.edara.edaracash.features.util.RadioGridGroup>
+                    </androidx.cardview.widget.CardView>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/small_margin"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/print"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+
+
+                            android:layout_marginStart="@dimen/mid_margin"
+                            android:layout_marginEnd="@dimen/small_margin"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/md_theme_light_secondaryContainer"
+                            android:text="@string/print_only"
+                            android:textColor="@color/md_theme_light_onSecondaryContainer"
+                            app:cornerRadius="@dimen/button_radius"
+
+
+                            />
+
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/pay_button"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+
+
+                            android:layout_marginStart="@dimen/small_margin"
+                            android:layout_marginEnd="@dimen/mid_margin"
+                            android:layout_weight="1"
+                            android:text="@string/pay"
+                            app:cornerRadius="@dimen/button_radius" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

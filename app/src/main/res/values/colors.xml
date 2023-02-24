@@ -63,5 +63,7 @@
     <color name="md_theme_dark_scrim">#000000</color>
     <color name="md_theme_gray">#DDDCDB</color>
     <color name="md_theme_primary_transparent">#99D1E4FF</color>
+    <color name="blue_gray">#EDF1FC</color>
+    <color name="dark_gray">#4B4B4B</color>
 
 </resources>

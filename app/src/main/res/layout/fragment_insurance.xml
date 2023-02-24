@@ -11,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/mid_margin"
-        tools:context=".presentation.insurance_search.InsuranceFragment">
+        tools:context=".features.service_search.ServicesFragment">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/work_order_ref"
+            android:id="@+id/analysis_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -27,22 +27,93 @@
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/work_order"
+                android:hint="@string/analysis_code"
                 android:imeOptions="actionSearch"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
+        <View
+            android:id="@+id/line"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginVertical="@dimen/mid_margin"
+            android:background="?attr/colorOutline"
+            app:layout_constraintBottom_toTopOf="@+id/unit_no"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/or_"
+            app:layout_constraintTop_toBottomOf="@+id/analysis_code" />
+
+        <TextView
+            android:id="@+id/or_"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/small_margin"
+            android:layout_marginVertical="@dimen/mid_margin"
+            android:text="@string/or"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/unit_no"
+            app:layout_constraintEnd_toStartOf="@+id/line"
+            app:layout_constraintStart_toEndOf="@+id/line2"
+            app:layout_constraintTop_toBottomOf="@+id/analysis_code" />
+
+        <View
+            android:id="@+id/line2"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginVertical="@dimen/mid_margin"
+            android:background="?attr/colorOutline"
+            app:layout_constraintBottom_toTopOf="@+id/unit_no"
+            app:layout_constraintEnd_toStartOf="@+id/or_"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/analysis_code" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/unit_no"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/mid_margin"
+            app:layout_constraintBottom_toTopOf="@+id/search_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/analysis_code"
+            app:layout_constraintVertical_bias="0.10">
+
+            <com.google.android.material.textfield.TextInputEditText
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/unit_number"
+                android:imeOptions="actionSearch"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                tools:ignore="TextContrastCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/search_button"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/mid_margin"
             android:text="@string/search"
+            app:cornerRadius="@dimen/button_radius"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/work_order_ref" />
+            app:layout_constraintTop_toBottomOf="@+id/failuers"
+            tools:ignore="TextSizeCheck" />
+
+        <TextView
+            android:id="@+id/failuers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small_margin"
+            android:textColor="?attr/colorError"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/unit_no" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

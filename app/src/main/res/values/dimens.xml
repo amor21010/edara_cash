@@ -3,4 +3,9 @@
     <dimen name="small_margin">8dp</dimen>
     <dimen name="mid_margin">16dp</dimen>
     <dimen name="big_margin">32dp</dimen>
+    <dimen name="button_radius">12dp</dimen>
+    <dimen name="extra_radius">120dp</dimen>
+    <dimen name="receipt_big">30sp</dimen>
+    <dimen name="receipt_normal">27sp</dimen>
+    <dimen name="receipt_small">20sp</dimen>
 </resources>

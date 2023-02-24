@@ -5,14 +5,29 @@
 
     <data>
 
+        <variable
+            name="user"
+            type="net.edara.edaracash.features.home.model.UserProfileReponse" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="@dimen/mid_margin"
-        tools:context=".presentation.ChooseOrderTypeFragment">
+        tools:context=".features.home.ChooseOrderTypeFragment">
 
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/welcome_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintBottom_toTopOf="@+id/servicesFragment"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/servicesFragment"
@@ -23,32 +38,20 @@
             app:layout_constraintBottom_toTopOf="@id/insuranceFragment"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/welcome_banner">
 
-            <LinearLayout
+
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/small_margin"
+                android:layout_height="wrap_content"
+                android:text="@string/privet_service"
+                android:textAlignment="center"
+                android:textColor="?attr/colorOnPrimaryContainer"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:drawableTint="?attr/colorOnPrimaryContainer"
+                app:drawableTopCompat="@drawable/service_tool" />
 
-                android:orientation="vertical">
-
-                <ImageView
-
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    app:srcCompat="@drawable/service_tool"
-                    app:tint="?attr/colorOnPrimaryContainer" />
-
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/privet_service"
-                    android:textAlignment="center"
-                    android:textColor="?attr/colorOnPrimaryContainer"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -63,30 +66,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/servicesFragment">
 
-            <LinearLayout
+
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/small_margin"
-                android:orientation="vertical">
-
-                <ImageView
-
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    app:srcCompat="@drawable/insurance_tool"
-                    app:tint="?attr/colorOnPrimaryContainer" />
-
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/insurance"
-                    android:textAlignment="center"
-
-                    android:textColor="?attr/colorOnPrimaryContainer"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                android:text="@string/insurance"
+                android:textAlignment="center"
+                android:textColor="?attr/colorOnPrimaryContainer"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:drawableTint="?attr/colorOnPrimaryContainer"
+                app:drawableTopCompat="@drawable/insurance_tool" />
         </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,7 +16,7 @@
             android:layout_margin="@dimen/mid_margin"
             android:elevation="@dimen/small_margin"
             app:cardCornerRadius="@dimen/mid_margin"
-            app:cardElevation="@dimen/small_margin">
+            app:cardElevation="@dimen/button_radius">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

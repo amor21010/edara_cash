@@ -1,13 +1,12 @@
 <resources>
-    <string name="app_name">Edara Worker</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="app_name">Edara Finance</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="logo">logo</string>
     <string name="insurance">Insurance</string>
-    <string name="service">service</string>
+    <string name="service">service(s) :</string>
     <string name="search">Search</string>
     <string name="work_order">Work Order</string>
     <string name="edit">Edit</string>
@@ -21,7 +20,7 @@
     <string name="cancel">Cancel</string>
     <string name="discount">Discount</string>
     <string name="clint_name">Clint Name: </string>
-    <string name="unit_number">Unit Number: </string>
+    <string name="unit_number">Unit No: </string>
     <string name="analysis_code">Analysis Code: </string>
     <string name="tax">Tax</string>
     <string name="extra_charge">Extra Charge</string>
@@ -45,4 +44,29 @@
     <string name="cl">CL</string>
     <string name="other">Other</string>
     <string name="save_and_proceed_to_payment">Save And Proceed To Payment</string>
+    <string name="or">OR</string>
+    <string name="money_value"> %,.2f L.E</string>
+    <string name="string_value">%s : %s</string>
+
+    <string name="select_all">Select All</string>
+    <string name="geidea_package_name">com.geidea.meeza.smartpos.uat</string>
+    <string name="date">Date :</string>
+    <string name="reciept_no">Receipt No:</string>
+    <string name="project">Project :</string>
+    <string name="unit_code">Unit Code :</string>
+    <string name="collection_no">Collection No:</string>
+    <string name="service_">Service</string>
+    <string name="amount">Amount</string>
+    <string name="total_included_tax">Total Included VAT \'If Any\' Tax are included</string>
+    <string name="user">User :</string>
+    <string name="geidia">Geidia</string>
+    <string name="service_name">service name</string>
+    <string name="recipt_qr_code">recipt qr code</string>
+    <string name="notes">Notes</string>
+    <string name="dash">_ _</string>
+    <string name="address">Building 1, services area,Beverly Hills, Sheikh Zayed
+Hotline #: 16230
+VAT: 340-250-73</string>
+    <string name="seprator">__________________________________________________________________</string>
+
 </resources>

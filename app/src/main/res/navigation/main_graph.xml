@@ -7,16 +7,19 @@
 
     <fragment
         android:id="@+id/landingFragment"
-        android:name="net.edara.edaracash.presentation.LandingFragment"
+        android:name="net.edara.edaracash.features.landing.LandingFragment"
         android:label="fragment_landing"
         tools:layout="@layout/fragment_landing">
         <action
             android:id="@+id/action_landingFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_landingFragment_to_chooseOrderTypeFragment"
+            app:destination="@id/chooseOrderTypeFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="net.edara.edaracash.presentation.login.LoginFragment"
+        android:name="net.edara.edaracash.features.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login">
 
@@ -29,7 +32,7 @@
 
     <fragment
         android:id="@+id/insuranceFragment"
-        android:name="net.edara.edaracash.presentation.insurance_search.InsuranceFragment"
+        android:name="net.edara.edaracash.features.insurance_search.InsuranceFragment"
         android:label="fragment_insurance"
         tools:layout="@layout/fragment_insurance">
         <action
@@ -38,7 +41,7 @@
     </fragment>
     <fragment
         android:id="@+id/servicesFragment"
-        android:name="net.edara.edaracash.presentation.service_search.ServicesFragment"
+        android:name="net.edara.edaracash.features.service_search.ServicesFragment"
         android:label="ServicesFragment">
         <action
             android:id="@+id/action_servicesFragment_to_resultFragment"
@@ -46,42 +49,47 @@
     </fragment>
     <fragment
         android:id="@+id/resultFragment"
-        android:name="net.edara.edaracash.presentation.search_result.ResultFragment"
+        android:name="net.edara.edaracash.features.search_result.ResultFragment"
         android:label="fragment_result"
         tools:layout="@layout/fragment_result">
         <action
-            android:id="@+id/action_resultFragment_to_editWorkOrderFragment"
-            app:destination="@id/editWorkOrderFragment"
-            app:popUpTo="@id/resultFragment" />
+            android:id="@+id/action_resultFragment_to_paymentFragment"
+            app:destination="@id/paymentFragment" />
+        <argument
+            android:name="services"
+            app:argType="net.edara.domain.models.getAllService.GetAllServiceResonse$Data$Service[]" />
     </fragment>
     <fragment
         android:id="@+id/editWorkOrderFragment"
-        android:name="net.edara.edaracash.presentation.edit_work_order.EditWorkOrderFragment"
+        android:name="net.edara.edaracash.features.edit_work_order.EditWorkOrderFragment"
         android:label="EditWorkOrderFragment">
         <argument
-            android:name="workOrder"
-            app:argType="net.edara.edaracash.models.WorkOrder" />
-        <action
-            android:id="@+id/action_editWorkOrderFragment_to_paymentFragment"
-            app:destination="@id/paymentFragment" />
-        <action
-            android:id="@+id/action_editWorkOrderFragment_to_invoiceFragment"
-            app:destination="@id/invoiceFragment" />
+            android:name="service"
+            app:argType="net.edara.domain.models.getAllService.GetAllServiceResonse$Data$Service" />
     </fragment>
     <fragment
         android:id="@+id/paymentFragment"
-        android:name="net.edara.edaracash.presentation.pay_fragment.PaymentFragment"
+        android:name="net.edara.edaracash.features.pay_fragment.PaymentFragment"
         android:label="PaymentFragment">
-        <argument
-            android:name="workOrder"
-            app:argType="net.edara.edaracash.models.WorkOrder" />
         <action
             android:id="@+id/action_paymentFragment_to_invoiceFragment"
             app:destination="@id/invoiceFragment" />
+        <action
+            android:id="@+id/action_paymentFragment_to_resultFragment"
+            app:destination="@id/resultFragment"
+            app:popUpTo="@id/resultFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="services"
+            app:argType="net.edara.domain.models.getAllService.GetAllServiceResonse$Data$Service[]" />
+        <argument
+            android:name="unitInfo"
+            app:argType="net.edara.domain.models.print.PrintResponse$Data"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/chooseOrderTypeFragment"
-        android:name="net.edara.edaracash.presentation.ChooseOrderTypeFragment"
+        android:name="net.edara.edaracash.features.home.ChooseOrderTypeFragment"
         android:label="ChooseOrderTypeFragment" >
         <action
             android:id="@+id/action_chooseOrderTypeFragment_to_insuranceFragment"
@@ -92,11 +100,14 @@
     </fragment>
     <fragment
         android:id="@+id/invoiceFragment"
-        android:name="net.edara.edaracash.presentation.invoice.InvoiceFragment"
+        android:name="net.edara.edaracash.features.invoice.InvoiceFragment"
         android:label="fragment_invoice"
         tools:layout="@layout/fragment_invoice" >
         <argument
-            android:name="order"
-            app:argType="net.edara.edaracash.models.WorkOrder" />
+            android:name="services"
+            app:argType="net.edara.domain.models.getAllService.GetAllServiceResonse$Data$Service[]" />
+        <argument
+            android:name="extras"
+            app:argType="net.edara.edaracash.models.ExtrasDto" />
     </fragment>
 </navigation>

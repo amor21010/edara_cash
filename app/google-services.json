@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "82603969205",
+    "project_id": "last-project-9d7d7",
+    "storage_bucket": "last-project-9d7d7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:82603969205:android:dc586586013b4b38560cfc",
+        "android_client_info": {
+          "package_name": "net.edara.edaracash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "82603969205-4gghgs621hvkq8h2q6hef1m7bju69ftl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMyi7SOZR3JCLcvKutJ0hpm3PIdEnD61A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "82603969205-4gghgs621hvkq8h2q6hef1m7bju69ftl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

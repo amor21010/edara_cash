@@ -5,200 +5,286 @@
 
     <data>
 
-        <variable
-            name="workOrder"
-            type="net.edara.edaracash.models.WorkOrder" />
+
     </data>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="@dimen/mid_margin"
-        tools:context=".presentation.pay_fragment.PaymentFragment">
+
+        android:background="?attr/colorSecondaryContainer"
+        android:fillViewport="true"
+        tools:context=".features.pay_fragment.PaymentFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/mid_margin"
 
             >
 
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lottieAnimationView"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.02"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
-                app:lottie_rawRes="@raw/bill" />
-
-            <TextView
-                android:id="@+id/clint_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:clientName="@{workOrder}"
-
-                app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView"
-                app:layout_constraintVertical_bias="0.060000002" />
-
-            <TextView
-                android:id="@+id/analysis_code"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:analysesCode="@{workOrder}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/unit_no"
-                app:layout_constraintTop_toBottomOf="@+id/clint_name"
-                app:layout_constraintVertical_bias="0.06" />
-
-            <TextView
-                android:id="@+id/unit_no"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:unitNumber="@{workOrder}"
-                app:layout_constraintEnd_toStartOf="@id/analysis_code"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/clint_name"
-                app:layout_constraintVertical_bias="0.06" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/extra_charge"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginHorizontal="@dimen/mid_margin"
+                android:layout_marginVertical="@dimen/mid_margin"
+                android:backgroundTint="?attr/colorOnPrimaryContainer"
+                app:cardCornerRadius="@dimen/big_margin"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:enabled="false"
-
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/unit_no"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/mid_margin">
+
+
+                    <TextView
+                        android:id="@+id/text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/clint_name"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/clint_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textAlignment="viewEnd"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="18sp"
+
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@+id/text"
+
+                        app:layout_constraintTop_toTopOf="@+id/text" />
+
+
+                    <TextView
+                        android:id="@+id/text2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/unit_number"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="@+id/text"
+
+
+                        app:layout_constraintTop_toBottomOf="@id/text" />
+
+                    <TextView
+                        android:id="@+id/unit_no"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewEnd"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@id/text2"
+
+                        app:layout_constraintTop_toBottomOf="@id/text" />
+
+
+                    <TextView
+                        android:id="@+id/text3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/analysis_code"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="@+id/text"
+                        app:layout_constraintTop_toBottomOf="@id/text2" />
+
+                    <TextView
+                        android:id="@+id/analysis_code"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="viewEnd"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+
+                        app:layout_constraintStart_toEndOf="@id/text3"
+                        app:layout_constraintTop_toBottomOf="@id/text2" />
+
+
+                    <TextView
+                        android:id="@+id/text4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/service"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+
+                        app:layout_constraintStart_toStartOf="@+id/text"
+                        app:layout_constraintTop_toBottomOf="@id/text3" />
+
+                    <LinearLayout
+                        android:id="@+id/service"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:orientation="vertical"
+                        app:layout_constraintStart_toEndOf="@+id/text4"
+                        app:layout_constraintTop_toBottomOf="@id/text3" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-60dp"
+                android:padding="@dimen/small_margin"
+                app:cardCornerRadius="@dimen/button_radius"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
                 app:layout_constraintVertical_bias="0.06">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/pading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/extra_charge"
-                    android:imeOptions="actionNext"
-                    android:inputType="numberDecimal"
-                    android:maxLines="1"
-                    app:doubleText="@{workOrder.extraCharge}"
-                    tools:ignore="TextContrastCheck" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_margin="@dimen/mid_margin"
+                    android:paddingTop="60dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tax"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:enabled="false"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/extra_charge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.06">
 
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/extra_charge">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="@string/extra_charge"
+                            android:imeOptions="actionNext"
+                            android:inputType="numberDecimal"
+                            android:maxLines="1"
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/tax"
-                    android:imeOptions="actionDone"
-                    android:inputType="numberDecimal"
-                    android:maxLines="1"
-                    app:doubleText="@{workOrder.tax}"
+                            tools:ignore="TextContrastCheck" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    tools:ignore="TextContrastCheck" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tax"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintBottom_toTopOf="@+id/discount"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/extra_charge">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/discount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:enabled="false"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tax">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="@string/tax"
+                            android:imeOptions="actionDone"
+                            android:inputType="numberDecimal"
+                            android:maxLines="1"
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/discount"
-                    android:imeOptions="actionDone"
-                    android:inputType="numberDecimal"
-                    android:maxLines="1"
-                    app:doubleText="@{workOrder.discount}"
-                    tools:ignore="TextContrastCheck" />
-            </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/total"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/big_margin"
-                android:text="@string/total"
-                android:textSize="22sp"
+                            tools:ignore="TextContrastCheck" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/total_price"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/discount" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/discount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintBottom_toTopOf="@+id/total"
+                        app:layout_constraintEnd_toEndOf="parent"
 
-            <TextView
-                android:id="@+id/total_price"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/big_margin"
-                app:doubleText="@{workOrder.total}"
-                android:textAlignment="viewEnd"
-                android:textSize="22sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/total"
-                app:layout_constraintTop_toBottomOf="@+id/discount" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tax">
 
-            <Button
-                android:id="@+id/print"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="@string/discount"
+                            android:imeOptions="actionDone"
+                            android:inputType="numberDecimal"
+                            android:maxLines="1"
+                            tools:ignore="TextContrastCheck" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                android:layout_marginStart="@dimen/small_margin"
-                android:backgroundTint="@color/md_theme_light_secondaryContainer"
-                android:text="@string/print_only"
-                android:textColor="@color/md_theme_light_onSecondaryContainer"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/cancel_button"
-                app:layout_constraintTop_toTopOf="@+id/cancel_button" />
+                    <TextView
+                        android:id="@+id/total"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/mid_margin"
+                        android:text="@string/total"
+                        android:textSize="22sp"
+                        app:layout_constraintBottom_toTopOf="@+id/cancel_button"
 
-            <Button
-                android:id="@+id/cancel_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/mid_margin"
-                android:layout_marginEnd="@dimen/small_margin"
-                android:backgroundTint="@color/md_theme_light_tertiaryContainer"
-                android:text="@string/cancel"
-                android:textColor="@color/md_theme_light_onSecondaryContainer"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/print"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/total"
-                app:layout_constraintVertical_bias="0.1" />
+                        app:layout_constraintEnd_toStartOf="@id/total_price"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/discount" />
 
-            <Button
-                android:id="@+id/pay_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/small_margin"
-                android:text="@string/proceed_to_payment"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cancel_button"
-                app:layout_constraintVertical_bias="0.1" />
+                    <TextView
+                        android:id="@+id/total_price"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/big_margin"
+
+                        android:textAlignment="viewEnd"
+                        android:textSize="22sp"
+                        app:layout_constraintBottom_toTopOf="@+id/total"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/total"
+                        app:layout_constraintTop_toBottomOf="@+id/total" />
+
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/cancel_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/small_margin"
+                        android:layout_marginEnd="@dimen/small_margin"
+                        android:backgroundTint="@color/md_theme_light_tertiaryContainer"
+                        android:text="@string/cancel"
+                        android:textColor="@color/md_theme_light_onSecondaryContainer"
+                        app:cornerRadius="@dimen/button_radius"
+
+                        app:layout_constraintEnd_toStartOf="@+id/pay_button"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/total" />
+
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/pay_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/proceed_to_payment"
+                        app:cornerRadius="@dimen/button_radius"
+                        app:layout_constraintBottom_toBottomOf="@id/cancel_button"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@id/cancel_button"
+                        app:layout_constraintTop_toTopOf="@+id/cancel_button"
+                        app:layout_constraintVertical_bias="0.1" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

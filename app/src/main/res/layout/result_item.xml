@@ -6,22 +6,24 @@
 
         <variable
             name="result"
-            type="net.edara.edaracash.models.WorkOrder" />
+            type="net.edara.domain.models.getAllService.GetAllServiceResonse.Data.Service" />
     </data>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/mid_margin"
         android:layout_marginVertical="@dimen/small_margin"
-        app:cardCornerRadius="@dimen/mid_margin">
+        app:cardCornerRadius="@dimen/mid_margin"
+        app:cardElevation="7dp">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_margin="@dimen/mid_margin"
 
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/small_margin"
+            android:layout_height="100dp"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -41,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/small_margin"
                     android:layout_marginTop="@dimen/small_margin"
-                    android:text="@{result.title}"
+                    android:text="@{result.serviceName}"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -51,27 +53,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/small_margin"
                     android:layout_marginVertical="@dimen/small_margin"
-                    android:textSize="18sp"
-                    app:doubleText="@{result.total}" />
+                    android:text="@{result.amount}"
+                    android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/unit_no"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/small_margin"
-                    android:textColor="?attr/colorOutline"
-                    android:textSize="18sp"
 
-                    app:unitNumber="@{result}" />
-
-                <TextView
-                    android:id="@+id/analysis_code"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/small_margin"
-                    android:textColor="?attr/colorOutline"
-                    android:textSize="18sp"
-                    app:analysesCode="@{result}" />
             </LinearLayout>
 
 
@@ -79,6 +64,7 @@
                 android:id="@+id/imageView2"
                 android:layout_width="64dp"
                 android:layout_height="match_parent"
+                android:contentDescription="@string/logo"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/linear"
                 app:layout_constraintStart_toStartOf="parent"
@@ -101,11 +87,22 @@
                     android:background="?attr/colorOutline" />
 
                 <ImageView
+                    android:id="@+id/edit"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/mid_margin"
+                    android:contentDescription="@string/edit"
                     app:srcCompat="@drawable/arrow_right_24"
+
                     app:tint="?attr/colorOutline" />
+
+                <CheckBox
+                    android:id="@+id/selected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/mid_margin"
+                    android:visibility="gone" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
