@@ -22,10 +22,7 @@ import net.edara.edaracash.models.ExtrasDto
 
 class PaymentFragment : Fragment() {
 
-    private val viewModel: PaymentViewModel by lazy {
-        ViewModelProvider(this)[PaymentViewModel::class.java]
 
-    }
     var discount = 0.0
     var tax = 0.0
     var extraCharge = 0.0
