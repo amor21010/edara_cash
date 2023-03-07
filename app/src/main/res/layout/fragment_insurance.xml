@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -11,34 +11,49 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/mid_margin"
-        tools:context=".features.service_search.ServicesFragment">
+        tools:context="net.edara.edaracash.features.insurance_search.InsuranceFragment">
+
+        <TextView
+            android:id="@+id/find"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/find_unit_by"
+            android:textSize="@dimen/receipt_big"
+            android:textStyle="bold"
+
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/analysis_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="@dimen/big_margin"
+            android:hint="@string/analysis_code"
+            app:layout_constraintBottom_toTopOf="@id/or_"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.10">
+            app:layout_constraintTop_toBottomOf="@+id/find"
+            app:layout_constraintVertical_bias="0.9">
 
             <com.google.android.material.textfield.TextInputEditText
 
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/analysis_code"
+                android:layout_height="64dp"
+
                 android:imeOptions="actionSearch"
                 android:inputType="textEmailAddress"
-                android:maxLines="1"
-                tools:ignore="TextContrastCheck" />
+                android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <View
             android:id="@+id/line"
             android:layout_width="0dp"
             android:layout_height="2dp"
-            android:layout_marginVertical="@dimen/mid_margin"
+            android:layout_marginVertical="@dimen/big_margin"
             android:background="?attr/colorOutline"
             app:layout_constraintBottom_toTopOf="@+id/unit_no"
             app:layout_constraintEnd_toEndOf="parent"
@@ -50,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/small_margin"
-            android:layout_marginVertical="@dimen/mid_margin"
+            android:layout_marginVertical="@dimen/big_margin"
             android:text="@string/or"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/unit_no"
@@ -74,7 +89,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/mid_margin"
+            android:layout_marginTop="@dimen/big_margin"
+            android:hint="@string/unit_number"
             app:layout_constraintBottom_toTopOf="@+id/search_button"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/analysis_code"
@@ -83,12 +101,11 @@
             <com.google.android.material.textfield.TextInputEditText
 
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/unit_number"
+                android:layout_height="64dp"
+
                 android:imeOptions="actionSearch"
                 android:inputType="textEmailAddress"
-                android:maxLines="1"
-                tools:ignore="TextContrastCheck" />
+                android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -102,8 +119,7 @@
             app:cornerRadius="@dimen/button_radius"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/failuers"
-            tools:ignore="TextSizeCheck" />
+            app:layout_constraintTop_toBottomOf="@+id/failuers" />
 
         <TextView
             android:id="@+id/failuers"

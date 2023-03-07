@@ -97,6 +97,12 @@
         <action
             android:id="@+id/action_chooseOrderTypeFragment_to_servicesFragment"
             app:destination="@id/servicesFragment" />
+        <argument
+            android:name="user_profile"
+            app:argType="net.edara.domain.models.ProfileResponse$Data" />
+        <argument
+            android:name="token"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/invoiceFragment"
@@ -109,5 +115,16 @@
         <argument
             android:name="extras"
             app:argType="net.edara.edaracash.models.ExtrasDto" />
+        <action
+            android:id="@+id/action_invoiceFragment_to_paymentMethodFragment"
+            app:destination="@id/paymentMethodFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentMethodFragment"
+        android:name="net.edara.edaracash.features.methodes_fragment.PaymentMethodFragment"
+        android:label="PaymentMethodFragment" >
+        <argument
+            android:name="paymentRequest"
+            app:argType="net.edara.domain.models.payment.PaymentRequest" />
     </fragment>
 </navigation>

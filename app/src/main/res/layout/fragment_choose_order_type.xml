@@ -5,79 +5,179 @@
 
     <data>
 
-        <variable
-            name="user"
-            type="net.edara.edaracash.features.home.model.UserProfileReponse" />
+
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="@dimen/mid_margin"
+        android:fillViewport="true"
+
         tools:context=".features.home.ChooseOrderTypeFragment">
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:id="@+id/welcome_banner"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            app:layout_constraintBottom_toTopOf="@+id/servicesFragment"
-            app:layout_constraintEnd_toEndOf="parent"
-
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/servicesFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="?attr/colorPrimaryContainer"
-            app:cardCornerRadius="@dimen/mid_margin"
-            app:layout_constraintBottom_toTopOf="@id/insuranceFragment"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/welcome_banner">
+            android:layout_height="match_parent">
 
 
-            <TextView
+            <!--            <View
+                            android:id="@+id/view"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            android:background="?attr/colorPrimaryContainer"
+                            app:layout_constraintBottom_toTopOf="@+id/servicesFragment"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginBottom="@dimen/mid_margin"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />-->
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/servicesFragment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/mid_margin"
+                android:layout_marginEnd="@dimen/small_margin"
+                android:backgroundTint="?attr/colorPrimaryContainer"
+                android:visibility="gone"
+                app:cardCornerRadius="@dimen/mid_margin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/insuranceFragment"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/small_margin"
+                    android:text="@string/privet_service"
+                    android:textAlignment="center"
+                    android:textColor="?attr/colorOnPrimaryContainer"
+                    android:textSize="@dimen/receipt_normal"
+                    android:textStyle="bold"
+
+                    app:drawableTint="?attr/colorOnPrimaryContainer"
+                    app:drawableTopCompat="@drawable/repairing" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/insuranceFragment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/small_margin"
+                android:layout_marginEnd="@dimen/mid_margin"
+                android:backgroundTint="?attr/colorPrimaryContainer"
+                android:visibility="gone"
+                app:cardCornerRadius="@dimen/mid_margin"
+                app:layout_constraintBottom_toBottomOf="@id/servicesFragment"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/servicesFragment"
+                app:layout_constraintTop_toTopOf="@id/servicesFragment">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/small_margin"
+                    android:text="@string/insurance"
+                    android:textAlignment="center"
+                    android:textColor="?attr/colorOnPrimaryContainer"
+                    android:textSize="@dimen/receipt_normal"
+                    android:textStyle="bold"
+
+                    app:drawableTint="?attr/colorOnPrimaryContainer"
+                    app:drawableTopCompat="@drawable/legal" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/privet_service"
-                android:textAlignment="center"
-                android:textColor="?attr/colorOnPrimaryContainer"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                app:drawableTint="?attr/colorOnPrimaryContainer"
-                app:drawableTopCompat="@drawable/service_tool" />
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/insuranceFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="?attr/colorPrimaryContainer"
-            app:cardCornerRadius="@dimen/mid_margin"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/servicesFragment">
+                android:layout_marginHorizontal="@dimen/small_margin"
+                android:background="@drawable/background_reg"
+                app:cardCornerRadius="@dimen/button_radius"
+                app:contentPaddingBottom="@dimen/mid_margin"
+                app:contentPaddingTop="@dimen/small_margin"
+                app:layout_constraintBottom_toTopOf="@+id/servicesFragment"
+                app:layout_constraintEnd_toEndOf="parent"
 
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/insurance"
-                android:textAlignment="center"
-                android:textColor="?attr/colorOnPrimaryContainer"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                app:drawableTint="?attr/colorOnPrimaryContainer"
-                app:drawableTopCompat="@drawable/insurance_tool" />
-        </androidx.cardview.widget.CardView>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.13999999">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_margin="@dimen/small_margin"
+                    android:background="@drawable/background_oval"
+                    android:elevation="3dp"
+                    android:padding="@dimen/small_margin"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/logo" />
+
+                <TextView
+                    android:id="@+id/Welcome"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginStart="@dimen/small_margin"
+
+
+                    android:text="Welcome,"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textSize="@dimen/receipt_big"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView3"
+                    app:layout_constraintTop_toTopOf="@+id/imageView3"
+                    app:layout_constraintVertical_bias="0.1" />
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/mid_margin"
+
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:text="User name"
+
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textSize="@dimen/receipt_small"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/user_mail"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView3"
+                    app:layout_constraintTop_toBottomOf="@+id/Welcome" />
+
+                <TextView
+                    android:id="@+id/user_mail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+
+                    android:layout_marginStart="@dimen/mid_margin"
+                    android:layout_marginBottom="@dimen/big_margin"
+                    android:text="User name"
+
+                    android:textColor="?attr/colorOnPrimary"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView3"
+                    app:layout_constraintTop_toBottomOf="@+id/user_name" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
 </layout>

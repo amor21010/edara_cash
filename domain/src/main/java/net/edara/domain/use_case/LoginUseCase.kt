@@ -1,9 +1,9 @@
 package net.edara.domain.use_case
 
-import net.edara.domain.repo.LoginRepo
+import net.edara.domain.repo.UserRepo
 
 
-class LoginUseCase(private val loginRepo: LoginRepo) {
+class LoginUseCase(private val userRepo: UserRepo) {
     suspend operator fun invoke(username: String, password: String) =
-        loginRepo.login(username, password)
+        userRepo.login(username, password)
 }

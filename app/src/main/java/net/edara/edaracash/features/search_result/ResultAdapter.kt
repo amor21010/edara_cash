@@ -6,9 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import dagger.hilt.android.AndroidEntryPoint
+import com.google.android.material.R.attr.colorPrimaryContainer
+
 import net.edara.domain.models.getAllService.GetAllServiceResonse.Data.Service
 import net.edara.edaracash.databinding.ResultItemBinding
+
 import net.edara.edaracash.features.util.getColorFromAttr
 
 
@@ -69,13 +71,13 @@ class ResultAdapter(
             if (item.isSelectedForPayment) {
                 selectedItems.add(item)
                 binding.selected.visibility = View.VISIBLE
-                binding.edit.visibility = View.GONE
+                binding.edit.visibility = View.INVISIBLE
                 binding.card.setCardBackgroundColor(
-                    itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorPrimaryContainer)
+                    itemView.context.getColorFromAttr(colorPrimaryContainer)
                 )
             } else {
                 selectedItems.remove(item)
-                binding.selected.visibility = View.GONE
+                binding.selected.visibility = View.INVISIBLE
                 binding.edit.visibility = View.VISIBLE
                 binding.card.setCardBackgroundColor(
                     itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorOnPrimary)
@@ -83,6 +85,10 @@ class ResultAdapter(
                 )
             }
             binding.selected.isChecked = item.isSelectedForPayment
+            binding.selected.setOnCheckedChangeListener { _, isChecked ->
+                item.isSelectedForPayment = isChecked
+                handleCheckStateChanges(item)
+            }
 
         }
 
@@ -98,8 +104,6 @@ class ResultAdapter(
             }
         }
     }
-
-
 }
 
 class SearchResultDiffUtil : DiffUtil.ItemCallback<Service>() {

@@ -11,12 +11,12 @@ import net.edara.edaracash.R
 
 fun isGeideaInstalled(context: Context, uri: String): Boolean {
     val packageManger = context.packageManager
-    try {
+    return try {
         packageManger.getPackageInfo(uri, PackageManager.GET_ACTIVITIES)
-        return true
+        true
     } catch (e: Exception) {
         e.printStackTrace()
-        return false
+        false
     }
 
 }

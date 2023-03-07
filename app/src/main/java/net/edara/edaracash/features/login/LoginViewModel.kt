@@ -7,44 +7,56 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import net.edara.domain.models.login.LoginResponse
 import net.edara.domain.use_case.LoginUseCase
-import net.edara.edaracash.features.util.JWTUtils
+import net.edara.domain.use_case.ProfileUseCase
+import net.edara.edaracash.features.util.TokenUtils
 import net.edara.edaracash.models.Consts.USER_TOKEN
+import net.edara.edaracash.models.UserState
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase, private val dataStore: DataStore<Preferences>
+    private val loginUseCase: LoginUseCase,private val profileUseCase: ProfileUseCase, private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
 
-    private val _loginState = MutableStateFlow<LoginResponse?>(null)
-    val loginState: StateFlow<LoginResponse?> = _loginState
-    private val _errorState = MutableStateFlow<String?>(null)
-    val error: StateFlow<String?> = _errorState
+    private val _loginState = MutableStateFlow<UserState>(UserState.Init)
+    val loginState: StateFlow<UserState> = _loginState
 
     suspend fun login(userName: String, password: String) {
         try {
             val result = loginUseCase(userName, password)
             val token = result.data?.token
             if (token != null) {
-                val user = JWTUtils.getUserJWT(result.data?.token!!)
-                if (user != null && user.Role?.lowercase(Locale.ROOT) == "technician") {
-                    _errorState.value =
-                        "This User is not Allowed For This Application"
+                val user = TokenUtils.getUserJWT(result.data?.token!!)
+                if (user != null && user.role?.lowercase(Locale.ROOT) == "pos-technician") {
+                    _loginState.value =
+                        UserState.Failure("This User is not Allowed For This Application")
                 } else {
-                    _errorState.value = null
+
                     dataStore.edit {
-                        it[USER_TOKEN] = result.data?.token!!
+                        it[USER_TOKEN] = token
                     }
-                    _loginState.value = result
+                    getUserProfile(token)
                 }
             } else {
-                _errorState.value = result.message
+                _loginState.value = UserState.Failure(result.message!!)
             }
         } catch (e: Exception) {
-            _errorState.value = e.message
+            _loginState.value = UserState.Failure(e.message!!)
+
+        }
+    }
+
+    private suspend fun getUserProfile(token: String) {
+        try {
+            val result = profileUseCase.invoke(token)
+            if (result.data != null) _loginState.value = UserState.Success(result.data!!,token)
+        } catch (e: Exception) {
+            if (e.message?.uppercase().toString()
+                    .contains("UNAUTHORIZED")
+            ) _loginState.value = UserState.TokenExpired
+            else _loginState.value = UserState.Failure(e.message.toString())
         }
     }
 

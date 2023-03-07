@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -13,97 +14,98 @@
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/mid_margin"
+        android:layout_marginHorizontal="@dimen/small_margin"
         android:layout_marginVertical="@dimen/small_margin"
         app:cardCornerRadius="@dimen/mid_margin"
         app:cardElevation="7dp">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_margin="@dimen/mid_margin"
-
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+
+            android:layout_height="64dp"
+android:layout_marginVertical="@dimen/small_margin"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@id/linear"
+
+            <TextView
+                android:id="@+id/title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_marginHorizontal="@dimen/small_margin"
+                android:text="@{result.serviceName}"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/linear2"
-                app:layout_constraintStart_toEndOf="@id/imageView2"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintEnd_toStartOf="@id/sep"
+                app:layout_constraintHorizontal_weight="4"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/small_margin"
+                android:layout_marginVertical="@dimen/small_margin"
+                android:text="@{result.amount}"
 
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/small_margin"
-                    android:layout_marginTop="@dimen/small_margin"
-                    android:text="@{result.serviceName}"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/price"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/small_margin"
-                    android:layout_marginVertical="@dimen/small_margin"
-                    android:text="@{result.amount}"
-                    android:textSize="18sp" />
-
-
-            </LinearLayout>
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/edit"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/sep"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="64dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
+                android:layout_margin="@dimen/small_margin"
                 android:contentDescription="@string/logo"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/linear"
+                app:layout_constraintEnd_toStartOf="@id/title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/logo" />
 
-            <LinearLayout
-                android:id="@+id/linear2"
-                android:layout_width="64dp"
-                android:layout_height="0dp"
-                android:orientation="horizontal"
+
+            <View
+                android:id="@+id/sep"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="?attr/colorOutline"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/price"
+                app:layout_constraintStart_toEndOf="@+id/title"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/edit"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/mid_margin"
+                android:contentDescription="@string/edit"
+                app:layout_constraintBottom_toBottomOf="parent"
+
+                app:layout_constraintEnd_toEndOf="@id/selected"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/selected"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/arrow_right_24"
+                app:tint="?attr/colorOutline" />
+
+            <CheckBox
+                android:id="@+id/selected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/linear"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/sep"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="?attr/colorOutline" />
-
-                <ImageView
-                    android:id="@+id/edit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/mid_margin"
-                    android:contentDescription="@string/edit"
-                    app:srcCompat="@drawable/arrow_right_24"
-
-                    app:tint="?attr/colorOutline" />
-
-                <CheckBox
-                    android:id="@+id/selected"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_margin="@dimen/mid_margin"
-                    android:visibility="gone" />
-            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </layout>

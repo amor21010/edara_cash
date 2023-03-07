@@ -16,13 +16,13 @@ import kotlinx.coroutines.launch
 import net.edara.edaracash.databinding.FragmentLoginBinding
 
 import net.edara.edaracash.features.dialogs.LoadingDialogFragment
+import net.edara.edaracash.models.UserState
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
 
     private val dialog = LoadingDialogFragment()
 
-    private var isLoggedIn = false;
     private val viewModel: LoginViewModel by viewModels()
     private lateinit var binding: FragmentLoginBinding
     override fun onCreateView(
@@ -35,20 +35,27 @@ class LoginFragment : Fragment() {
         }
 
         lifecycleScope.launchWhenResumed {
-            viewModel.error.asLiveData().observe(viewLifecycleOwner) {
-                if (it != null) {
-                    dialog.dismiss()
-                    binding.password.error = it
+
+            viewModel.loginState.asLiveData().observe(viewLifecycleOwner) { state ->
+                when (state) {
+                    is UserState.Failure -> {
+                        dialog.dismiss()
+                        binding.password.error = state.error
+                    }
+                    is UserState.Success -> {
+                        dialog.dismiss()
+                        findNavController().navigate(
+                            LoginFragmentDirections.actionLoginFragmentToChooseOrderTypeFragment(
+                                state.user,state.token
+                            )
+                        )
+                    }
+
+                    else -> {
+
+                    }
                 }
-            }
-            viewModel.loginState.collect {
-                if (it?.data?.token != null && !isLoggedIn) {
-                    isLoggedIn = true
-                    dialog.dismiss()
-                    findNavController().navigate(
-                        LoginFragmentDirections.actionLoginFragmentToChooseOrderTypeFragment()
-                    )
-                }
+
 
             }
         }
@@ -58,9 +65,10 @@ class LoginFragment : Fragment() {
 
     private fun showLoading() {
         dialog.show(requireActivity().supportFragmentManager, "loading")
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             login()
         }
+
     }
 
     private suspend fun login() {

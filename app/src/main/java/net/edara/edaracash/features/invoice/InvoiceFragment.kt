@@ -1,30 +1,31 @@
 package net.edara.edaracash.features.invoice
 
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.os.Bundle
-import android.view.Gravity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.SimpleAdapter
-import android.widget.TextView
-import androidx.core.view.isVisible
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import net.edara.domain.models.getAllService.GetAllServiceResonse
+import net.edara.domain.models.payment.PaymentRequest
 import net.edara.edaracash.MainActivity
 import net.edara.edaracash.R
 import net.edara.edaracash.databinding.FragmentInvoiceBinding
+
+
+import net.edara.edaracash.models.Consts
 import net.edara.edaracash.models.ExtrasDto
+import net.edara.sunmiprinterutill.PrinterUtil
+import javax.inject.Inject
 
 const val REQUEST_CODE = 55555
 
@@ -32,17 +33,29 @@ const val REQUEST_CODE = 55555
 class InvoiceFragment : Fragment() {
 
 
-    private val viewModel: InvoiceViewModel by viewModels()
+    private val viewModel: InvoiceViewModel by activityViewModels()
     private lateinit var binding: FragmentInvoiceBinding
+    var permissions: List<String?> = listOf()
 
+    @Inject
+    lateinit var printerUtil: PrinterUtil
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentInvoiceBinding.inflate(inflater, container, false)
         val serviceList = InvoiceFragmentArgs.fromBundle(requireArguments()).services.toList()
         val extrasDto = InvoiceFragmentArgs.fromBundle(requireArguments()).extras
+        lifecycleScope.launch {
+            viewModel.getUnitInfo(servicesId = serviceList.map { it.id })
+        }
 
-        viewModel.getUnitInfo(servicesId = serviceList.map { it.id })
+
+        viewModel.permissions.asLiveData().observe(viewLifecycleOwner) { userTokenPermissions ->
+            if (userTokenPermissions != null) {
+                permissions = userTokenPermissions
+            }
+        }
+
         val total = setExtrasToView(serviceList, extrasDto)
         viewModel.unitInfo.asLiveData().observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -61,6 +74,7 @@ class InvoiceFragment : Fragment() {
                 ResultState.Unauthorized -> {
                     createUnauthorizedAlert()
                 }
+
             }
 
         }
@@ -70,32 +84,46 @@ class InvoiceFragment : Fragment() {
 
 
         binding.payButton.setOnClickListener {
-            if (binding.methode.isVisible) {
-                (requireActivity() as MainActivity).requestPayment(total.toFloat()) {
-                    printView()
-                }
-            } else {
-                binding.print.text = resources.getString(R.string.cancel)
-
-                binding.methode.visibility = View.VISIBLE
-            }
+            if (permissions.contains(Consts.PAY_PERMISSION))
+                findNavController().navigate(
+                    InvoiceFragmentDirections.actionInvoiceFragmentToPaymentMethodFragment(
+                        PaymentRequest(
+                            discount = extrasDto.discount,
+                            extraCharge = extrasDto.extraCharge,
+                            tax = extrasDto.tax,
+                            paymentMethodId = null,
+                            requestIdentifers = serviceList.map { it.id },
+                            transactionNo = null
+                        )
+                    )
+                ) else Toast.makeText(
+                requireContext(),
+                "You Are Not Allowed To Preform This Action",
+                Toast.LENGTH_SHORT
+            ).show()
 
         }
+
         binding.print.setOnClickListener {
-            if (binding.methode.isVisible) {
-                binding.print.text = resources.getString(R.string.print_only)
-
-                binding.methode.visibility = View.GONE
-            } else {
-
+            Log.d("TAG", "onCreateView: $permissions")
+            if (permissions.contains(Consts.PRINT_PERMISSION))
                 printView()
-            }
+            else Toast.makeText(
+                requireContext(),
+                "You Are Not Allowed To Preform This Action",
+                Toast.LENGTH_SHORT
+            ).show()
+
         }
         return binding.root
     }
 
     private fun printView() {
+
         val view = binding.linearLayout
+
+
+
         (activity as MainActivity).printReceipt(view)
         view.requestLayout()
         view.invalidate()
@@ -106,8 +134,10 @@ class InvoiceFragment : Fragment() {
     private fun createUnauthorizedAlert() {
         val dialog = AlertDialog.Builder(requireContext())
         dialog.setTitle("Session Expired")
+        dialog.setCancelable(false)
+
         dialog.setMessage("Please Login Again")
-        dialog.setPositiveButton("Login") { dialogInterface, i ->
+        dialog.setPositiveButton("Login") { _, _ ->
             findNavController().navigate(R.id.loginFragment)
         }
         dialog.setOnDismissListener {
@@ -117,15 +147,13 @@ class InvoiceFragment : Fragment() {
     }
 
     private fun bindUnitInfo(state: ResultState.Success, total: Double) {
-        binding.date.text = binding.date.text.toString() + state.unitInfo?.issueDate
+        binding.date.text = "Date :" + state.unitInfo?.issueDate
         binding.reciept.text = state.unitInfo?.receiptNo
         binding.project.text = state.unitInfo?.projectName
         binding.unitCode.text = state.unitInfo?.analysisCode
         binding.unitNo.text = state.unitInfo?.unitNumber
         binding.collection.text = state.unitInfo?.collectionNo
         binding.user.text = state.unitInfo?.loggedInUser
-
-        binding.geidea.isEnabled = (total >= 2.0)
 
     }
 

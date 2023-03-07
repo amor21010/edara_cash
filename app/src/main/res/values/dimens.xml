@@ -5,7 +5,8 @@
     <dimen name="big_margin">32dp</dimen>
     <dimen name="button_radius">12dp</dimen>
     <dimen name="extra_radius">120dp</dimen>
-    <dimen name="receipt_big">30sp</dimen>
-    <dimen name="receipt_normal">27sp</dimen>
-    <dimen name="receipt_small">20sp</dimen>
+    <dimen name="receipt_big">22sp</dimen>
+    <dimen name="receipt_normal">20sp</dimen>
+    <dimen name="receipt_small">18sp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>

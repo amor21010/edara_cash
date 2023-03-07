@@ -1,8 +1,6 @@
 package net.edara.edaracash
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -15,11 +13,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
-import net.edara.sunmiprinterutill.PrinterUtil
 import dagger.hilt.android.AndroidEntryPoint
 import net.edara.edaracash.databinding.ActivityMainBinding
 import net.edara.edaracash.geidea.PaymentResult
 import net.edara.edaracash.geidea.isGeideaInstalled
+import net.edara.sunmiprinterutill.PrinterUtil
 import javax.inject.Inject
 
 private const val PAYMENT_REQUEST_CODE = 100
@@ -30,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     private var isNavigationUpAllowed: Boolean = false
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var onSuccess: () -> Unit
+    private lateinit var onSuccess: (transitionNo: String) -> Unit
 
     @Inject
     lateinit var printer: PrinterUtil
@@ -69,7 +67,16 @@ class MainActivity : AppCompatActivity() {
                                 Toast.makeText(
                                     this, resultPayment.responseMessage, Toast.LENGTH_SHORT
                                 ).show()
-                                onSuccess()
+                                if (resultPayment.responseCode in listOf(
+                                        "000",
+                                        "001",
+                                        "003",
+                                        "007",
+                                        "087",
+                                        "089"
+                                    )
+                                )
+                                    onSuccess(resultPayment.transactionRefNo)
                             }
                         } catch (e: Exception) {
                             // Handle exception
@@ -158,6 +165,14 @@ class MainActivity : AppCompatActivity() {
                     )
 
                 }
+                R.id.paymentMethodFragment -> {
+                    FragmentNavChanges(
+                        isBackEnabled = true,
+                        title = "Choose Payment Methode",
+                        isAppBarAvailable = true,
+                    )
+
+                }
                 else -> {
                     FragmentNavChanges(
                         title = "Edit Order",
@@ -183,7 +198,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun requestPayment(
-        price: Float, onSuccess: () -> Unit
+        price: Float, onSuccess: (transitionNo: String) -> Unit
     ) {
         val packageName = "com.geidea.meeza.smartpos.uat"
 
@@ -217,6 +232,7 @@ class MainActivity : AppCompatActivity() {
 
     fun printReceipt(view: View) {
         printer.sendViewToPrinter(view)
+        view.requestLayout()
         view.invalidate()
     }
 

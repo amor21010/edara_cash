@@ -9,34 +9,42 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import net.edara.edaracash.features.util.JWTUtils
+import net.edara.domain.use_case.ProfileUseCase
+import net.edara.edaracash.features.util.TokenUtils
 import net.edara.edaracash.models.Consts.USER_TOKEN
+import net.edara.edaracash.models.UserState
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class LandingViewModel @Inject constructor(private val dataStore: DataStore<Preferences>) :
-    ViewModel() {
-    private val _token = MutableStateFlow<String?>(null)
-    val token: StateFlow<String?> = _token
+class LandingViewModel @Inject constructor(
+    private val profileUseCase: ProfileUseCase, private val dataStore: DataStore<Preferences>
+) : ViewModel() {
+    private val _userState = MutableStateFlow<UserState>(UserState.Init)
+    val userState: StateFlow<UserState> = _userState
 
     init {
         getStoredToken()
     }
 
     private fun getStoredToken() {
+
         viewModelScope.launch {
 
             dataStore.data.collect {
                 val token = it[USER_TOKEN]
                 if (token != null) {
-                    val user = JWTUtils.getUserJWT(token)
+                    val user = TokenUtils.getUserJWT(token)
                     if (user != null) {
-                        if (user.Role?.lowercase(Locale.ROOT) != "technician") {
-                            _token.value = token
-                        } else removeToken()
+                        if (user.role?.lowercase(Locale.ROOT) != "pos-technician") {
+                            getUserProfile(token)
+
+                        } else {
+                            _userState.value = UserState.NotAllowed
+                            removeToken()
+                        }
                     }
-                } else _token.value = ""
+                } else _userState.value = UserState.UnAuthorized
 
 
             }
@@ -44,10 +52,22 @@ class LandingViewModel @Inject constructor(private val dataStore: DataStore<Pref
     }
 
     private suspend fun removeToken() {
-        _token.value = ""
+
         dataStore.edit {
             it.remove(USER_TOKEN)
         }
         getStoredToken()
+    }
+
+    private suspend fun getUserProfile(token: String) {
+        try {
+            val result = profileUseCase.invoke(token)
+            if (result.data != null) _userState.value = UserState.Success(result.data!!,token)
+        } catch (e: Exception) {
+            if (e.message?.uppercase().toString()
+                    .contains("UNAUTHORIZED")
+            ) _userState.value = UserState.TokenExpired
+            else _userState.value = UserState.Failure(e.message.toString())
+        }
     }
 }

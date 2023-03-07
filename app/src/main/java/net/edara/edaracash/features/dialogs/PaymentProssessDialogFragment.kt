@@ -13,7 +13,7 @@ import kotlinx.coroutines.delay
 import net.edara.edaracash.R
 
 
-class PaymentSuccessDialogFragment (): DialogFragment() {
+class PaymentProssessDialogFragment (): DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
@@ -43,7 +43,7 @@ class PaymentSuccessDialogFragment (): DialogFragment() {
 }
 
 suspend fun Fragment.showPrintSuccessDialog() {
-    val successDialog = PaymentSuccessDialogFragment()
+    val successDialog = PaymentProssessDialogFragment()
     successDialog.show(requireActivity().supportFragmentManager, "pay")
     delay(4000).apply {
         successDialog.dismiss()

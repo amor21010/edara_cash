@@ -119,6 +119,8 @@ class ResultFragment : Fragment() {
     private fun createUnauthorizedAlert() {
         val dialog = AlertDialog.Builder(requireContext())
         dialog.setTitle("Session Expired")
+        dialog.setCancelable(false)
+
         dialog.setMessage("Please Login Again")
         dialog.setPositiveButton("Login") { dialogInterface, i ->
             findNavController().navigate(R.id.loginFragment)
