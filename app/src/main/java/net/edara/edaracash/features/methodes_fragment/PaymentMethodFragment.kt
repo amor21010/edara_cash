@@ -22,7 +22,7 @@ import net.edara.edaracash.features.invoice.ResultState
 
 @AndroidEntryPoint
 class PaymentMethodFragment : Fragment() {
-    lateinit var paymentRequest: PaymentRequest
+    private lateinit var paymentRequest: PaymentRequest
     lateinit var binding: FragmentMethodBinding
     private val viewModel: PaymentViewModel by viewModels()
     private val printViewModel: InvoiceViewModel by activityViewModels()
@@ -84,7 +84,8 @@ class PaymentMethodFragment : Fragment() {
                 }
                 PaymentViewModel.PaymentState.Succeeded -> {
                     dismissDialog()
-                    findNavController().navigate(R.id.invoiceFragment)
+                    Toast.makeText(requireContext(), "Payment Succeeded", Toast.LENGTH_LONG).show()
+                    findNavController().navigateUp()
                 }
                 PaymentViewModel.PaymentState.Unauthorized -> {
                     dismissDialog()
@@ -120,24 +121,28 @@ class PaymentMethodFragment : Fragment() {
     }
 
     private fun pay(methodID: Int) {
-        printViewModel.unitInfo.asLiveData().observe(viewLifecycleOwner) { resultState ->
-
-            if (resultState is ResultState.Success) {
 
                 when (methodID) {
-                    9 -> {
-                        val total = resultState.unitInfo?.grandTotal?.toFloat() ?: 0f
 
-                        (requireActivity() as MainActivity).requestPayment(total) { transitionNo ->
-                            payToTheApi(methodID, transitionNo)
-                        }
+                    9 -> {
+                        printViewModel.unitInfo.asLiveData()
+                            .observe(viewLifecycleOwner) { resultState ->
+
+                                if (resultState is ResultState.Success) {
+
+                                    val total = resultState.unitInfo?.grandTotal?.toFloat() ?: 0f
+
+                                    (requireActivity() as MainActivity).requestPayment(total) { transitionNo ->
+                                        payToTheApi(methodID, transitionNo)
+                                    }
+                                }
+
+                            }
                     }
                     else -> {
                         payToTheApi(methodID)
                     }
                 }
-            }
-        }
 
 
     }

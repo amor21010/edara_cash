@@ -23,7 +23,7 @@ class ChooseOrderTypeFragment : Fragment() {
         binding.userName.text = user.fullname
         binding.userMail.text = user.email
         val userToken = TokenUtils.getUserJWT(token)
-        if (userToken != null && !userToken.permissions.isNullOrEmpty()) {
+        if (!userToken.permissions.isNullOrEmpty()) {
             Log.d("TAG", "onCreateView:${userToken.permissions}")
             if (userToken.permissions.contains(Consts.PRIVET_SERVICE_PERMISSION)) {
                 binding.servicesFragment.isEnabled = true

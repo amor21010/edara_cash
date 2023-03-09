@@ -60,25 +60,12 @@
             app:argType="net.edara.domain.models.getAllService.GetAllServiceResonse$Data$Service[]" />
     </fragment>
     <fragment
-        android:id="@+id/editWorkOrderFragment"
-        android:name="net.edara.edaracash.features.edit_work_order.EditWorkOrderFragment"
-        android:label="EditWorkOrderFragment">
-        <argument
-            android:name="service"
-            app:argType="net.edara.domain.models.getAllService.GetAllServiceResonse$Data$Service" />
-    </fragment>
-    <fragment
         android:id="@+id/paymentFragment"
         android:name="net.edara.edaracash.features.pay_fragment.PaymentFragment"
         android:label="PaymentFragment">
         <action
             android:id="@+id/action_paymentFragment_to_invoiceFragment"
             app:destination="@id/invoiceFragment" />
-        <action
-            android:id="@+id/action_paymentFragment_to_resultFragment"
-            app:destination="@id/resultFragment"
-            app:popUpTo="@id/resultFragment"
-            app:popUpToInclusive="true" />
         <argument
             android:name="services"
             app:argType="net.edara.domain.models.getAllService.GetAllServiceResonse$Data$Service[]" />
@@ -109,15 +96,13 @@
         android:name="net.edara.edaracash.features.invoice.InvoiceFragment"
         android:label="fragment_invoice"
         tools:layout="@layout/fragment_invoice" >
-        <argument
-            android:name="services"
-            app:argType="net.edara.domain.models.getAllService.GetAllServiceResonse$Data$Service[]" />
-        <argument
-            android:name="extras"
-            app:argType="net.edara.edaracash.models.ExtrasDto" />
         <action
             android:id="@+id/action_invoiceFragment_to_paymentMethodFragment"
-            app:destination="@id/paymentMethodFragment" />
+            app:destination="@id/paymentMethodFragment"
+            app:popUpTo="@id/invoiceFragment" />
+        <argument
+            android:name="invoice"
+            app:argType="net.edara.edaracash.models.InvoiceBuilder" />
     </fragment>
     <fragment
         android:id="@+id/paymentMethodFragment"

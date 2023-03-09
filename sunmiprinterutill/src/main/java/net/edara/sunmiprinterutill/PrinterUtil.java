@@ -13,7 +13,7 @@ import net.edara.sunmiprinterutill.model.AidlUtil;
 
 public class PrinterUtil {
 
-    public AidlUtil aidlUtil;
+    public final AidlUtil aidlUtil;
 
     public PrinterUtil(Context context) {
         aidlUtil = AidlUtil.getInstance();

@@ -8,4 +8,5 @@ object Consts {
  const val INSURANCE_PERMISSION=("INRequest.TPOS.Default")
  const val PRINT_PERMISSION=("PSRequest.FPOS.Print")
  const val PAY_PERMISSION=("PSRequest.FPOS.Pay")
+ const val ALLOWED_ROLE=("POS-Financial")
 }

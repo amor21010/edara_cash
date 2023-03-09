@@ -23,12 +23,12 @@ import woyou.aidlservice.jiuiv5.IWoyouService;
 public class AidlUtil {
     private static final String SERVICE＿PACKAGE = "woyou.aidlservice.jiuiv5";
     private static final String SERVICE＿ACTION = "woyou.aidlservice.jiuiv5.IWoyouService";
-    private static AidlUtil mAidlUtil = new AidlUtil();
+    private static final AidlUtil mAidlUtil = new AidlUtil();
     private IWoyouService woyouService;
     private Context context;
 
 
-    private ServiceConnection connService = new ServiceConnection() {
+    private final ServiceConnection connService = new ServiceConnection() {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
@@ -41,7 +41,7 @@ public class AidlUtil {
         }
     };
 
-    private int[] darkness = new int[]{0x0600, 0x0500, 0x0400, 0x0300, 0x0200, 0x0100, 0,
+    private final int[] darkness = new int[]{0x0600, 0x0500, 0x0400, 0x0300, 0x0200, 0x0100, 0,
             0xffff, 0xfeff, 0xfdff, 0xfcff, 0xfbff, 0xfaff};
 
     private AidlUtil() {

@@ -9,16 +9,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import net.edara.domain.models.getAllService.GetAllServiceResonse
+import net.edara.domain.models.print.PrintResponse
 import net.edara.edaracash.R
 import net.edara.edaracash.databinding.FragmentPaymentBinding
-import net.edara.edaracash.features.dialogs.showPrintSuccessDialog
 import net.edara.edaracash.models.ExtrasDto
+import net.edara.edaracash.models.InvoiceBuilder
 
 class PaymentFragment : Fragment() {
 
@@ -82,20 +79,25 @@ class PaymentFragment : Fragment() {
         totalSum(total)
 
         binding.cancelButton.setOnClickListener {
-            findNavController().navigateUp()
+            findNavController().popBackStack()
         }
         binding.payButton.setOnClickListener {
-            proceedToPayment(services)
+            proceedToPayment(services, unitInfo)
         }
         return binding.root
     }
 
-    private fun proceedToPayment(services: List<GetAllServiceResonse.Data.Service>) {
+    private fun proceedToPayment(
+        services: List<GetAllServiceResonse.Data.Service>,
+        unitInfo: PrintResponse.Data?
+    ) {
         val extrasDto = ExtrasDto(extraCharge, tax, discount)
+        val invoiceBuilder =
+            InvoiceBuilder(extrasDto = extrasDto, serviceList = services, unitInfo = unitInfo!!)
 
         findNavController().navigate(
             PaymentFragmentDirections.actionPaymentFragmentToInvoiceFragment(
-                services.toTypedArray(), extrasDto
+                invoiceBuilder
             )
         )
     }

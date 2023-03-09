@@ -15,27 +15,21 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import net.edara.domain.models.getAllService.GetAllServiceResonse
 import net.edara.domain.models.payment.PaymentRequest
 import net.edara.edaracash.MainActivity
 import net.edara.edaracash.R
 import net.edara.edaracash.databinding.FragmentInvoiceBinding
-
-
 import net.edara.edaracash.models.Consts
-import net.edara.edaracash.models.ExtrasDto
+import net.edara.edaracash.models.InvoiceBuilder
 import net.edara.sunmiprinterutill.PrinterUtil
 import javax.inject.Inject
 
-const val REQUEST_CODE = 55555
 
 @AndroidEntryPoint
 class InvoiceFragment : Fragment() {
-
-
     private val viewModel: InvoiceViewModel by activityViewModels()
     private lateinit var binding: FragmentInvoiceBinding
-    var permissions: List<String?> = listOf()
+    private var permissions: List<String?> = listOf()
 
     @Inject
     lateinit var printerUtil: PrinterUtil
@@ -43,10 +37,9 @@ class InvoiceFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentInvoiceBinding.inflate(inflater, container, false)
-        val serviceList = InvoiceFragmentArgs.fromBundle(requireArguments()).services.toList()
-        val extrasDto = InvoiceFragmentArgs.fromBundle(requireArguments()).extras
+        var invoice: InvoiceBuilder = InvoiceFragmentArgs.fromBundle(requireArguments()).invoice
         lifecycleScope.launch {
-            viewModel.getUnitInfo(servicesId = serviceList.map { it.id })
+            viewModel.getUnitInfo(servicesId = invoice.serviceList.map { it.id })
         }
 
 
@@ -56,7 +49,7 @@ class InvoiceFragment : Fragment() {
             }
         }
 
-        val total = setExtrasToView(serviceList, extrasDto)
+        setExtrasToView(invoice)
         viewModel.unitInfo.asLiveData().observe(viewLifecycleOwner) { state ->
             when (state) {
                 is ResultState.Error -> {
@@ -69,7 +62,8 @@ class InvoiceFragment : Fragment() {
 
                 }
                 is ResultState.Success -> {
-                    bindUnitInfo(state, total = total)
+                    invoice = invoice.copy(unitInfo = state.unitInfo!!)
+                    bindUnitInfo(invoice)
                 }
                 ResultState.Unauthorized -> {
                     createUnauthorizedAlert()
@@ -79,20 +73,21 @@ class InvoiceFragment : Fragment() {
 
         }
 
-        setServiceListToView(serviceList)
+        setServiceListToView(invoice)
 
 
 
         binding.payButton.setOnClickListener {
+
             if (permissions.contains(Consts.PAY_PERMISSION))
                 findNavController().navigate(
                     InvoiceFragmentDirections.actionInvoiceFragmentToPaymentMethodFragment(
                         PaymentRequest(
-                            discount = extrasDto.discount,
-                            extraCharge = extrasDto.extraCharge,
-                            tax = extrasDto.tax,
+                            discount = invoice.extrasDto.discount,
+                            extraCharge = invoice.extrasDto.extraCharge,
+                            tax = invoice.extrasDto.tax,
                             paymentMethodId = null,
-                            requestIdentifers = serviceList.map { it.id },
+                            requestIdentifers = invoice.serviceList.map { it.id },
                             transactionNo = null
                         )
                     )
@@ -119,11 +114,7 @@ class InvoiceFragment : Fragment() {
     }
 
     private fun printView() {
-
         val view = binding.linearLayout
-
-
-
         (activity as MainActivity).printReceipt(view)
         view.requestLayout()
         view.invalidate()
@@ -146,34 +137,31 @@ class InvoiceFragment : Fragment() {
         dialog.show()
     }
 
-    private fun bindUnitInfo(state: ResultState.Success, total: Double) {
-        binding.date.text = "Date :" + state.unitInfo?.issueDate
-        binding.reciept.text = state.unitInfo?.receiptNo
-        binding.project.text = state.unitInfo?.projectName
-        binding.unitCode.text = state.unitInfo?.analysisCode
-        binding.unitNo.text = state.unitInfo?.unitNumber
-        binding.collection.text = state.unitInfo?.collectionNo
-        binding.user.text = state.unitInfo?.loggedInUser
-
+    private fun bindUnitInfo(invoice: InvoiceBuilder) {
+        binding.progressBar.visibility=View.GONE
+        binding.linearLayout.visibility=View.VISIBLE
+        binding.date.text = "Date :" + invoice.unitInfo.issueDate
+        binding.reciept.text = invoice.unitInfo.receiptNo
+        binding.project.text = invoice.unitInfo.projectName
+        binding.unitCode.text = invoice.unitInfo.analysisCode
+        binding.unitNo.text = invoice.unitInfo.unitNumber
+        binding.collection.text = invoice.unitInfo.collectionNo
+        binding.user.text = invoice.unitInfo.loggedInUser
     }
 
     private fun setExtrasToView(
-        serviceList: List<GetAllServiceResonse.Data.Service>, extrasDto: ExtrasDto
-    ): Double {
-        val total = serviceList.sumOf {
-            (it.amount)?.toDouble() ?: 0.0
-        } + extrasDto.extraCharge + extrasDto.tax - extrasDto.discount
-
-        binding.total.text = total.toString()
-        binding.extraCharge.text = extrasDto.extraCharge.toString()
-        binding.discount.text = extrasDto.discount.toString()
-        return total
+        invoiceBuilder: InvoiceBuilder
+    ) {
+        binding.total.text = invoiceBuilder.unitInfo.grandTotal.toString()
+        binding.extraCharge.text = invoiceBuilder.unitInfo.extraCharge.toString()
+        binding.discount.text = invoiceBuilder.unitInfo.discount.toString()
     }
 
-    private fun setServiceListToView(serviceList: List<GetAllServiceResonse.Data.Service>) {
+    private fun setServiceListToView(invoice: InvoiceBuilder) {
         val adapter = ServiceAdapter()
-        adapter.submitList(serviceList)
+        adapter.submitList(invoice.serviceList)
         binding.services.adapter = adapter
+        bindUnitInfo(invoice)
     }
 
 }

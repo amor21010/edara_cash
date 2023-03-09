@@ -20,23 +20,14 @@
             android:layout_height="match_parent">
 
 
-            <!--            <View
-                            android:id="@+id/view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:background="?attr/colorPrimaryContainer"
-                            app:layout_constraintBottom_toTopOf="@+id/servicesFragment"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            android:layout_marginBottom="@dimen/mid_margin"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />-->
+
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/servicesFragment"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/mid_margin"
-                android:layout_marginEnd="@dimen/small_margin"
+                android:layout_marginHorizontal="@dimen/mid_margin"
+
                 android:backgroundTint="?attr/colorPrimaryContainer"
                 android:visibility="gone"
                 app:cardCornerRadius="@dimen/mid_margin"
@@ -66,8 +57,8 @@
                 android:id="@+id/insuranceFragment"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/small_margin"
-                android:layout_marginEnd="@dimen/mid_margin"
+                android:layout_marginHorizontal="@dimen/mid_margin"
+
                 android:backgroundTint="?attr/colorPrimaryContainer"
                 android:visibility="gone"
                 app:cardCornerRadius="@dimen/mid_margin"

@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.StateFlow
 import net.edara.domain.use_case.LoginUseCase
 import net.edara.domain.use_case.ProfileUseCase
 import net.edara.edaracash.features.util.TokenUtils
+import net.edara.edaracash.models.Consts
 import net.edara.edaracash.models.Consts.USER_TOKEN
 import net.edara.edaracash.models.UserState
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,8 +28,8 @@ class LoginViewModel @Inject constructor(
             val result = loginUseCase(userName, password)
             val token = result.data?.token
             if (token != null) {
-                val user = TokenUtils.getUserJWT(result.data?.token!!)
-                if (user != null && user.role?.lowercase(Locale.ROOT) == "pos-technician") {
+                val user = TokenUtils.getUserJWT(token)
+                if (user.role != Consts.ALLOWED_ROLE) {
                     _loginState.value =
                         UserState.Failure("This User is not Allowed For This Application")
                 } else {

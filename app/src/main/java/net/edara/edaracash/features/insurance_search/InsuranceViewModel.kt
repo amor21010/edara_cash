@@ -28,11 +28,15 @@ class InsuranceViewModel @Inject constructor(
             dataStore.data.collect { preferences ->
                 val token = preferences[Consts.USER_TOKEN]
                 try {
+                    val filter = if (analysisCode != null)
+                        GetAllServicesRequestDto.Filter(
+                            analysisCode = analysisCode, unitNo = null
+                        ) else GetAllServicesRequestDto.Filter(
+                        analysisCode = null, unitNo = unitNumber
+                    )
                     val result = getAllServicesUseCase(
                         GetAllServicesRequestDto(
-                            filter = GetAllServicesRequestDto.Filter(
-                                analysisCode = analysisCode, unitNo = unitNumber
-                            ),
+                            filter = filter,
                             sorting = GetAllServicesRequestDto.Sorting(),
                             paginator = GetAllServicesRequestDto.Paginator()
                         ), "bearer $token"

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package net.edara.edaracash
 
 import android.content.Intent
@@ -15,6 +17,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import dagger.hilt.android.AndroidEntryPoint
 import net.edara.edaracash.databinding.ActivityMainBinding
+
 import net.edara.edaracash.geidea.PaymentResult
 import net.edara.edaracash.geidea.isGeideaInstalled
 import net.edara.sunmiprinterutill.PrinterUtil
@@ -52,6 +55,7 @@ class MainActivity : AppCompatActivity() {
         onBackPressed(controller)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -141,14 +145,7 @@ class MainActivity : AppCompatActivity() {
                     )
 
                 }
-                R.id.editWorkOrderFragment -> {
-                    FragmentNavChanges(
-                        isBackEnabled = true,
-                        title = "Edit Order",
-                        isAppBarAvailable = true,
-                    )
 
-                }
                 R.id.paymentFragment -> {
                     FragmentNavChanges(
                         isBackEnabled = true,

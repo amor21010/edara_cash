@@ -36,6 +36,7 @@
 
                 app:contentPaddingBottom="@dimen/big_margin"
 
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -44,11 +45,11 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/linearLayout"
                     android:layout_width="match_parent"
-
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/small_margin"
                     android:background="@android:color/white"
-                    android:paddingBottom="@dimen/big_margin">
+                    android:paddingBottom="@dimen/big_margin"
+                    android:visibility="invisible">
 
 
                     <ImageView
@@ -180,6 +181,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
+
                     <TextView
                         android:id="@+id/unit_code"
                         android:layout_width="0dp"
@@ -190,9 +192,10 @@
                         android:textSize="@dimen/receipt_normal"
                         app:layout_constraintBottom_toBottomOf="@+id/textView4"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/textView4"
-                        app:layout_constraintTop_toTopOf="@+id/textView4" />
-
+                        app:layout_constraintTop_toTopOf="@+id/textView4"
+                        app:layout_constraintVertical_bias="0.0" />
 
                     <TextView
                         android:id="@+id/textView7"
@@ -230,22 +233,22 @@
                         android:textColor="?attr/colorOutline"
                         android:textSize="@dimen/receipt_normal"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toTopOf="@id/view2"
+
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+                        app:layout_constraintTop_toTopOf="@+id/collection" />
 
                     <TextView
                         android:id="@+id/collection"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
 
-                        android:layout_marginTop="4dp"
                         android:textColor="?attr/colorOutline"
                         android:textSize="@dimen/receipt_normal"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView8"
+                        app:layout_constraintBottom_toTopOf="@+id/view2"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/textView8"
-                        app:layout_constraintTop_toTopOf="@+id/textView8" />
+                        app:layout_constraintTop_toBottomOf="@+id/textView7"
+                        tools:text="insinsflsjalfjslajdlsasdfasdjdljsaldkjflaj" />
 
                     <TextView
                         android:id="@+id/view2"
@@ -258,7 +261,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
 
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+                        app:layout_constraintTop_toBottomOf="@+id/collection" />
 
                     <TextView
                         android:id="@+id/textView6"
@@ -465,6 +468,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/address"
                         app:srcCompat="@drawable/reciept_qr_code" />
 
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
@@ -476,6 +480,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/recipt_image"
                 tools:visibility="visible" />
 
 
@@ -536,5 +541,16 @@
 
 
     </androidx.cardview.widget.CardView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

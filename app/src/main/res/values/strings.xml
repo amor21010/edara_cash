@@ -70,5 +70,6 @@ VAT: 340-250-73</string>
     <string name="seprator">__________________________________________________________________</string>
     <string name="find_unit_by">Find Unit By:</string>
     <string name="bank_transfer">Bank Transfer</string>
+    <string name="recipt_image">recipt image</string>
 
 </resources>
