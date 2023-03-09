@@ -69,6 +69,8 @@ class ResultFragment : Fragment() {
     }
 
     private fun bindUnitInfoToView(resultState: ResultState.Success) {
+        binding.progressBar.visibility = View.GONE
+        binding.view.visibility = View.VISIBLE
         unitInfo = resultState.unitInfo
         binding.clintName.text = unitInfo?.clientName
         binding.analysisCode.text = unitInfo?.analysisCode
@@ -77,7 +79,8 @@ class ResultFragment : Fragment() {
     }
 
     private fun showLoading() {
-
+        binding.progressBar.visibility = View.VISIBLE
+        binding.view.visibility = View.GONE
     }
 
     private fun showError() {

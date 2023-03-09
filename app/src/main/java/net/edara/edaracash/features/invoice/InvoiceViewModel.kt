@@ -74,5 +74,7 @@ sealed class ResultState {
     object Loading : ResultState()
     class Success(val unitInfo: PrintResponse.Data?) : ResultState()
     class Error(val msg: String?) : ResultState()
+
+
     object Unauthorized : ResultState()
 }

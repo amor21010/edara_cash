@@ -7,27 +7,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import net.edara.domain.models.payment.PaymentRequest
+import net.edara.domain.models.print.PrintResponse
 import net.edara.edaracash.MainActivity
 import net.edara.edaracash.R
 import net.edara.edaracash.databinding.FragmentMethodBinding
 import net.edara.edaracash.features.dialogs.PaymentProssessDialogFragment
-import net.edara.edaracash.features.invoice.InvoiceViewModel
-import net.edara.edaracash.features.invoice.ResultState
 
 @AndroidEntryPoint
 class PaymentMethodFragment : Fragment() {
     private lateinit var paymentRequest: PaymentRequest
     lateinit var binding: FragmentMethodBinding
     private val viewModel: PaymentViewModel by viewModels()
-    private val printViewModel: InvoiceViewModel by activityViewModels()
-    private val dialog = PaymentProssessDialogFragment()
 
+    private val dialog = PaymentProssessDialogFragment()
+    lateinit var invoice: PrintResponse.Data
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -76,23 +74,37 @@ class PaymentMethodFragment : Fragment() {
                         requireContext(), "Request Failed ${paymentState.msg}", Toast.LENGTH_LONG
                     ).show()
                 }
-                PaymentViewModel.PaymentState.Init -> {
 
-                }
                 PaymentViewModel.PaymentState.Loading -> {
                     showDialog()
                 }
-                PaymentViewModel.PaymentState.Succeeded -> {
-                    dismissDialog()
-                    Toast.makeText(requireContext(), "Payment Succeeded", Toast.LENGTH_LONG).show()
-                    findNavController().navigateUp()
-                }
+
                 PaymentViewModel.PaymentState.Unauthorized -> {
                     dismissDialog()
                     showUnauthorizedDialog()
                 }
+                else -> {}
             }
         }
+
+        viewModel.unitInfo.asLiveData().observe(viewLifecycleOwner) { resultState ->
+            when (resultState) {
+                is ResultState.Success -> {
+                    invoice = resultState.unitInfo!!
+                }
+                is ResultState.Updated -> {
+                    invoice = resultState.unitInfo!!
+                    dismissDialog()
+                    Toast.makeText(requireContext(), "Payment Succeeded", Toast.LENGTH_LONG).show()
+findNavController().navigateUp()
+                }
+                else -> {
+                }
+            }
+
+        }
+
+
         return binding.root
     }
 
@@ -125,20 +137,15 @@ class PaymentMethodFragment : Fragment() {
                 when (methodID) {
 
                     9 -> {
-                        printViewModel.unitInfo.asLiveData()
-                            .observe(viewLifecycleOwner) { resultState ->
 
-                                if (resultState is ResultState.Success) {
+                        val total = invoice.grandTotal?.toFloat() ?: 0f
 
-                                    val total = resultState.unitInfo?.grandTotal?.toFloat() ?: 0f
-
-                                    (requireActivity() as MainActivity).requestPayment(total) { transitionNo ->
-                                        payToTheApi(methodID, transitionNo)
-                                    }
-                                }
-
-                            }
+                        (requireActivity() as MainActivity).requestPayment(total) { transitionNo ->
+                            payToTheApi(methodID, transitionNo)
+                        }
                     }
+
+
                     else -> {
                         payToTheApi(methodID)
                     }

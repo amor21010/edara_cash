@@ -111,5 +111,10 @@
         <argument
             android:name="paymentRequest"
             app:argType="net.edara.domain.models.payment.PaymentRequest" />
+        <action
+            android:id="@+id/action_paymentMethodFragment_to_invoiceFragment"
+            app:destination="@id/invoiceFragment"
+            app:popUpTo="@id/chooseOrderTypeFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

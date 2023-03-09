@@ -52,15 +52,6 @@ class InvoiceFragment : Fragment() {
         setExtrasToView(invoice)
         viewModel.unitInfo.asLiveData().observe(viewLifecycleOwner) { state ->
             when (state) {
-                is ResultState.Error -> {
-
-                }
-                ResultState.Init -> {
-
-                }
-                ResultState.Loading -> {
-
-                }
                 is ResultState.Success -> {
                     invoice = invoice.copy(unitInfo = state.unitInfo!!)
                     bindUnitInfo(invoice)
@@ -69,6 +60,7 @@ class InvoiceFragment : Fragment() {
                     createUnauthorizedAlert()
                 }
 
+                else -> {}
             }
 
         }
