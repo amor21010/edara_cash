@@ -70,9 +70,14 @@ class InvoiceFragment : Fragment() {
 
 
         binding.payButton.setOnClickListener {
-
-            if (permissions.contains(Consts.PAY_PERMISSION))
-                findNavController().navigate(
+            try {
+                Log.d("onCreateView", "onCreateView: ${invoice.unitInfo.receiptNo}")
+                val recieptNo = (invoice.unitInfo.receiptNo.toString().toDouble())
+                if (recieptNo != 0.0) Toast.makeText(
+                    requireContext(), "This Service Has Been Paid Before.", Toast.LENGTH_SHORT
+                ).show()
+            } catch (e: Exception) {
+                if (permissions.contains(Consts.PAY_PERMISSION)) findNavController().navigate(
                     InvoiceFragmentDirections.actionInvoiceFragmentToPaymentMethodFragment(
                         PaymentRequest(
                             discount = invoice.extrasDto.discount,
@@ -84,15 +89,18 @@ class InvoiceFragment : Fragment() {
                         )
                     )
                 ) else Toast.makeText(
-                requireContext(),
-                "You Are Not Allowed To Preform This Action",
-                Toast.LENGTH_SHORT
-            ).show()
+                    requireContext(),
+                    "You Are Not Allowed To Preform This Action",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+            }
 
         }
 
         binding.print.setOnClickListener {
             Log.d("TAG", "onCreateView: $permissions")
+            invoice.unitInfo.receiptNo
             if (permissions.contains(Consts.PRINT_PERMISSION))
                 printView()
             else Toast.makeText(
@@ -144,9 +152,11 @@ class InvoiceFragment : Fragment() {
     private fun setExtrasToView(
         invoiceBuilder: InvoiceBuilder
     ) {
-        binding.total.text = invoiceBuilder.unitInfo.grandTotal.toString()
-        binding.extraCharge.text = invoiceBuilder.unitInfo.extraCharge.toString()
-        binding.discount.text = invoiceBuilder.unitInfo.discount.toString()
+        val total = (invoiceBuilder.unitInfo.grandTotal?.toDouble()
+            ?: 0.0) + invoiceBuilder.extrasDto.extraCharge + invoiceBuilder.extrasDto.tax - invoiceBuilder.extrasDto.discount
+        binding.total.text = total.toString()
+        binding.extraCharge.text = invoiceBuilder.extrasDto.extraCharge.toString()
+        binding.discount.text = invoiceBuilder.extrasDto.discount.toString()
     }
 
     private fun setServiceListToView(invoice: InvoiceBuilder) {

@@ -65,7 +65,9 @@
         android:label="PaymentFragment">
         <action
             android:id="@+id/action_paymentFragment_to_invoiceFragment"
-            app:destination="@id/invoiceFragment" />
+            app:destination="@id/invoiceFragment"
+            app:popUpTo="@id/resultFragment"
+            app:popUpToInclusive="true" />
         <argument
             android:name="services"
             app:argType="net.edara.domain.models.getAllService.GetAllServiceResonse$Data$Service[]" />

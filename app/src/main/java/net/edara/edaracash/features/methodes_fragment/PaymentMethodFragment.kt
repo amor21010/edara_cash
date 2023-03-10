@@ -9,8 +9,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import net.edara.domain.models.payment.PaymentRequest
 import net.edara.domain.models.print.PrintResponse
 import net.edara.edaracash.MainActivity
@@ -31,6 +33,12 @@ class PaymentMethodFragment : Fragment() {
     ): View {
         binding = FragmentMethodBinding.inflate(layoutInflater, container, false)
         paymentRequest = PaymentMethodFragmentArgs.fromBundle(requireArguments()).paymentRequest
+        lifecycleScope.launch {
+            viewModel.getUnitInfo(paymentRequest.requestIdentifers!!)
+        }
+
+
+
         binding.cash.setOnClickListener {
 
             pay(1)
@@ -96,7 +104,7 @@ class PaymentMethodFragment : Fragment() {
                     invoice = resultState.unitInfo!!
                     dismissDialog()
                     Toast.makeText(requireContext(), "Payment Succeeded", Toast.LENGTH_LONG).show()
-findNavController().navigateUp()
+                    findNavController().navigateUp()
                 }
                 else -> {
                 }
@@ -138,7 +146,10 @@ findNavController().navigateUp()
 
                     9 -> {
 
-                        val total = invoice.grandTotal?.toFloat() ?: 0f
+                        val total = invoice.grandTotal.toString().toFloat() +
+                                paymentRequest.extraCharge.toString().toFloat() +
+                                paymentRequest.tax.toString().toFloat() -
+                                paymentRequest.discount.toString().toFloat()
 
                         (requireActivity() as MainActivity).requestPayment(total) { transitionNo ->
                             payToTheApi(methodID, transitionNo)
@@ -154,7 +165,7 @@ findNavController().navigateUp()
 
     }
 
-    private fun payToTheApi(methodID: Int, transitionNo: String = "") {
+    private fun payToTheApi(methodID: Int, transitionNo: String? = null) {
         paymentRequest =
             paymentRequest.copy(paymentMethodId = methodID, transactionNo = transitionNo)
         viewModel.makePayment(paymentRequest)

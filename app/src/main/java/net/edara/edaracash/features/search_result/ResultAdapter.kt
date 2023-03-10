@@ -1,4 +1,4 @@
-package net.edara.edaracash.features.search_result;
+package net.edara.edaracash.features.search_result
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.R.attr.colorOnPrimary
 import com.google.android.material.R.attr.colorPrimaryContainer
 
 import net.edara.domain.models.getAllService.GetAllServiceResonse.Data.Service
@@ -80,7 +81,7 @@ class ResultAdapter(
                 binding.selected.visibility = View.INVISIBLE
                 binding.edit.visibility = View.VISIBLE
                 binding.card.setCardBackgroundColor(
-                    itemView.context.getColorFromAttr(com.google.android.material.R.attr.colorOnPrimary)
+                    itemView.context.getColorFromAttr(colorOnPrimary)
 
                 )
             }

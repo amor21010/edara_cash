@@ -31,7 +31,7 @@ class PaymentViewModel @Inject constructor(
     )
     val unitInfo = _unitInfo
 
-    suspend fun getUnitInfo(servicesId: List<String?>, updating: Boolean = false) {
+     suspend fun getUnitInfo(servicesId: List<String?>, updating: Boolean = false) {
         _unitInfo.value = ResultState.Loading
         dataStore.data.collect { preferences ->
             val token = preferences[USER_TOKEN]

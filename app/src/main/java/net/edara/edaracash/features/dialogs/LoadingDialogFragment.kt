@@ -31,7 +31,14 @@ class LoadingDialogFragment (): DialogFragment() {
             ViewGroup.LayoutParams.MATCH_PARENT
         )
 
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.md_theme_primary_transparent)));
+        dialog?.window?.setBackgroundDrawable(
+            ColorDrawable(
+                resources.getColor(
+                    R.color.md_theme_primary_transparent,
+                    null
+                )
+            )
+        );
 
         dialog?.setCanceledOnTouchOutside(false)
     }

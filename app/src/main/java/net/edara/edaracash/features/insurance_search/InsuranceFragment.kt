@@ -100,7 +100,7 @@ class InsuranceFragment : Fragment() {
         dialog.setCancelable(false)
 
         dialog.setMessage("Please Login Again")
-        dialog.setPositiveButton("Login") { dialogInterface, i ->
+        dialog.setPositiveButton("Login") { _, _ ->
             findNavController().navigate(R.id.loginFragment)
         }
 
