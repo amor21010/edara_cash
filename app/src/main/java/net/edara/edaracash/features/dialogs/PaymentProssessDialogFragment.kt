@@ -5,27 +5,29 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import kotlinx.coroutines.delay
 import net.edara.edaracash.R
+import net.edara.edaracash.databinding.PaymentSuccessDialogBinding
 
 
-class PaymentProssessDialogFragment (): DialogFragment() {
+class PaymentProssessDialogFragment() : DialogFragment() {
+    private lateinit var binder: PaymentSuccessDialogBinding
+    fun changeView() {
+        binder.success.visibility = View.GONE
+        binder.sucess.visibility = View.VISIBLE
+    }
+
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return activity?.let {
-            val builder = AlertDialog.Builder(it, R.style.NewDialog)
-            // Get the layout inflater
-            val inflater = requireActivity().layoutInflater;
-
-            builder.setView(inflater.inflate(R.layout.payment_success_dialog, null))
-
-            builder.setCancelable(false)
-            builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
+        val inflater = requireActivity().layoutInflater;
+        binder = PaymentSuccessDialogBinding.inflate(inflater)
+        val builder = AlertDialog.Builder(requireActivity(), R.style.NewDialog)
+        // Get the layout inflater
+        builder.setView(binder.root)
+        builder.setCancelable(false)
+        return builder.create()
     }
 
     override fun onStart() {
@@ -42,11 +44,3 @@ class PaymentProssessDialogFragment (): DialogFragment() {
 
 }
 
-suspend fun Fragment.showPrintSuccessDialog() {
-    val successDialog = PaymentProssessDialogFragment()
-    successDialog.show(requireActivity().supportFragmentManager, "pay")
-    delay(4000).apply {
-        successDialog.dismiss()
-        findNavController().navigateUp()
-    }
-}

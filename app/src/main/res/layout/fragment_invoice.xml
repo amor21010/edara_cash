@@ -500,7 +500,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -508,15 +507,25 @@
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/cancel_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/mid_margin"
+                android:layout_weight="1"
+                android:backgroundTint="@color/md_theme_light_tertiaryContainer"
+                android:text="@string/cancel"
+                android:textColor="@color/md_theme_light_onSecondaryContainer"
+                android:visibility="gone"
+                app:cornerRadius="@dimen/button_radius" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/print"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
 
-
-                android:layout_marginStart="@dimen/mid_margin"
-                android:layout_marginEnd="@dimen/small_margin"
+                android:layout_marginHorizontal="@dimen/mid_margin"
                 android:layout_weight="1"
-                android:backgroundTint="@color/md_theme_light_secondaryContainer"
+                android:backgroundTint="@color/md_theme_light_Container"
                 android:text="@string/print_only"
                 android:textColor="@color/md_theme_light_onSecondaryContainer"
                 app:cornerRadius="@dimen/button_radius"
@@ -531,12 +540,14 @@
                 android:layout_height="wrap_content"
 
 
-                android:layout_marginStart="@dimen/small_margin"
                 android:layout_marginEnd="@dimen/mid_margin"
                 android:layout_weight="1"
+                android:backgroundTint="@color/md_theme_light_primaryContainer"
+                android:textColor="@color/md_theme_light_onPrimaryContainer"
                 android:text="@string/pay"
                 app:cornerRadius="@dimen/button_radius" />
         </LinearLayout>
+
 
 
     </androidx.cardview.widget.CardView>

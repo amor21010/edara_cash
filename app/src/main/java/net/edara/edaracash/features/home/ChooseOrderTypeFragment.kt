@@ -36,7 +36,7 @@ class ChooseOrderTypeFragment : Fragment() {
                 binding.insuranceFragment.isEnabled = true
                 binding.insuranceFragment.visibility = View.VISIBLE
                 binding.insuranceFragment.setOnClickListener {
-                    findNavController().navigate(ChooseOrderTypeFragmentDirections.actionChooseOrderTypeFragmentToServicesFragment())
+                    findNavController().navigate(ChooseOrderTypeFragmentDirections.actionChooseOrderTypeFragmentToInsuranceFragment())
                 }
             }
         }

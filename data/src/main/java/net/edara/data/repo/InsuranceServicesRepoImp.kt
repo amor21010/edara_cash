@@ -7,25 +7,25 @@ import net.edara.domain.models.payment.PaymentRequest
 import net.edara.domain.models.payment.PaymentResponse
 import net.edara.domain.models.print.PrintRequest
 import net.edara.domain.models.print.PrintResponse
-import net.edara.domain.repo.ServicesRepo
+import net.edara.domain.repo.InsuranceRepo
 
-class ServicesRepoImp(private val apiService: ApiService) : ServicesRepo {
-    override suspend fun getAllServices(
+class InsuranceServicesRepoImp(private val apiService: ApiService) : InsuranceRepo {
+    override suspend fun getAllInsuranceServices(
         getAllServicesRequest: GetAllServicesRequestDto, authHeader: String
     ): GetAllServiceResonse {
-        return apiService.getAllServices(getAllServicesRequest, authHeader)
+        return apiService.insuranceServicGetAllServices(getAllServicesRequest, authHeader)
     }
 
-    override suspend fun printServices(
+    override suspend fun printInsuranceServices(
         printRequest: PrintRequest, authHeader: String
     ): PrintResponse {
-        return apiService.printServices(printRequest, authHeader)
+        return apiService.insuranceServicPrintServices(printRequest, authHeader)
     }
 
-    override suspend fun payServices(
+    override suspend fun payInsuranceServices(
         request: PaymentRequest, authHeader: String
     ): PaymentResponse {
-        return apiService.payAll(request, authHeader)
+        return apiService.insuranceServicePayAll(request, authHeader)
     }
 
 }

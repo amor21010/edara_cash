@@ -1,12 +1,11 @@
 package net.edara.domain.use_case
 
 import net.edara.domain.models.print.PrintRequest
-import net.edara.domain.repo.ServicesRepo
-import retrofit2.http.Header
+import net.edara.domain.repo.InsuranceRepo
 
-class PrintUseCase(private val servicesRepo: ServicesRepo) {
+class InsuranceServicePrintUseCase(private val insuranceRepo: InsuranceRepo) {
     suspend operator fun invoke(ids: List<String?>?, authHeader: String) =
-        servicesRepo.printServices(
+        insuranceRepo.printInsuranceServices(
             PrintRequest(ids), authHeader
         )
 }

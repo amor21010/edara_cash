@@ -3,7 +3,9 @@
 package net.edara.edaracash
 
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -15,13 +17,24 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
+import com.fawry.pos.retailer.connect.FawryConnect
+import com.fawry.pos.retailer.connect.model.connection.ConnectionType
+import com.fawry.pos.retailer.connect.model.messages.user.UserData
+import com.fawry.pos.retailer.connect.model.messages.user.UserType
+import com.fawry.pos.retailer.connect.model.payment.PaymentOptionType
+import com.fawry.pos.retailer.ipc.IPCConnectivity
+import com.fawry.pos.retailer.modelBuilder.sale.CardSale
+import com.nexgo.oaf.apiv3.APIProxy
+import com.nexgo.oaf.apiv3.device.printer.AlignEnum
+import com.nexgo.oaf.apiv3.device.printer.Printer
 import dagger.hilt.android.AndroidEntryPoint
 import net.edara.edaracash.databinding.ActivityMainBinding
-
-import net.edara.edaracash.geidea.PaymentResult
-import net.edara.edaracash.geidea.isGeideaInstalled
+import net.edara.edaracash.paymentMethods.fawry.FawryPaymentResult
+import net.edara.edaracash.paymentMethods.geidea.GeideaPaymentResult
+import net.edara.edaracash.paymentMethods.geidea.isGeideaInstalled
 import net.edara.sunmiprinterutill.PrinterUtil
 import javax.inject.Inject
+
 
 private const val PAYMENT_REQUEST_CODE = 100
 private const val RECEIPT_PRINT_REQUEST_CODE = 200
@@ -35,8 +48,8 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var printer: PrinterUtil
-
-
+    lateinit var fawryPrinter: Printer
+    val geideaPackageName = "com.geidea.meeza.smartpos.uat"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -66,7 +79,7 @@ class MainActivity : AppCompatActivity() {
                         val result = data?.getStringExtra("result")
                         try {
                             if (result != null) {
-                                val resultPayment = PaymentResult.fromJson(result)
+                                val resultPayment = GeideaPaymentResult.fromJson(result)
 
                                 Toast.makeText(
                                     this, resultPayment.responseMessage, Toast.LENGTH_SHORT
@@ -118,6 +131,46 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun fawryPay(
+        name: String, password: String, amount: Double, onSuccess: (transitionNo: String) -> Unit
+    ) {
+        val fawryConnect: FawryConnect = FawryConnect.setup<IPCConnectivity.Builder>(
+            ConnectionType.IPC, UserData(
+                username = name, password = password, userType = UserType.MCC
+            )
+        ).setContext(applicationContext)
+            .setConnectionCallBack(FawryConnect.OnConnectionCallBack(onConnected = {
+                Log.d("TAG", "fawryPay: connected")
+
+            }, onDisconnected = {
+                Log.d("TAG", "fawryPay: disconnected")
+
+            }, onFailure = { errorCode, throwable ->
+                Log.d("TAG", "fawryPay: ${throwable?.message}")
+                Toast.makeText(this, "Failed Due To: ${throwable?.message}", Toast.LENGTH_SHORT)
+                    .show()
+            })).connect()!!
+
+        fawryConnect.requestSale<CardSale.Builder>(PaymentOptionType.CARD)
+            .setAmount(amount)
+            .setCurrency("EGP")
+            .setExtras(null)
+            .setPrintReceipt(true)
+            .setDisplayInvoice(false)
+            .setPromoCode(null)
+            .setOrderID(null)
+            .send(999,
+                FawryConnect.OnTransactionCallBack(
+                    onTransactionRequestSuccess = { resultJson ->
+                        Log.d("TAG", "fawryPay: $resultJson")
+                        val result = FawryPaymentResult.buildFromJson(resultJson)
+                        result.body?.fawryReference?.let { reference -> onSuccess(reference) }
+
+                    }, onTransactionRequestFailure = { errorCode, cause ->
+                        Log.d("TAG", "fawryPay:error code:$errorCode cause: ${cause?.message}")
+                    })
+            )
+    }
 
     private fun handleNavChangesToTheView(controller: NavController) {
         controller.addOnDestinationChangedListener { _, dest, _ ->
@@ -197,10 +250,9 @@ class MainActivity : AppCompatActivity() {
     fun requestPayment(
         price: Float, onSuccess: (transitionNo: String) -> Unit
     ) {
-        val packageName = "com.geidea.meeza.smartpos.uat"
 
 
-        if (isGeideaInstalled(this, packageName)) {
+        if (isGeideaInstalled(this, geideaPackageName)) {
             val paymentIntent = Intent()
             paymentIntent.action = "com.geidea.meeza.smartpos.PURCHASE"
             paymentIntent.putExtra(Intent.EXTRA_TEXT, price.toString())
@@ -219,6 +271,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun fawryPrint(view: View) {
+        val deviceEngine = APIProxy.getDeviceEngine(this)
+        fawryPrinter = deviceEngine.printer
+        fawryPrinter.setTypeface(Typeface.SANS_SERIF)
+        val bitmap = printer.scaleImage(printer.convertViewToBitmap(view))
+        fawryPrinter.appendImage(bitmap, AlignEnum.CENTER)
+        fawryPrinter.startPrint(true) {
+            Log.d("fawryPrint", "fawryPrint: $it")
+        }
+    }
 
     private data class FragmentNavChanges(
         val isBottomNavAvailable: Boolean = false,
@@ -228,7 +290,10 @@ class MainActivity : AppCompatActivity() {
     )
 
     fun printReceipt(view: View) {
-        printer.sendViewToPrinter(view)
+        /*    if (isGeideaInstalled(this, geideaPackageName))
+                printer.sendViewToPrinter(view)
+            else*/
+        fawryPrint(view)
         view.requestLayout()
         view.invalidate()
     }

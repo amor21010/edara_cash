@@ -28,11 +28,11 @@
     <string name="zero">0</string>
     <string name="privet_service">Private Service</string>
     <string name="save">Save</string>
-    <string name="print_only">Print Only</string>
+    <string name="print_only">Print</string>
     <string name="edara_property_management_logo">edara property management logo</string>
     <string name="discount_">Discount :</string>
     <string name="labor_cost_">Labor Cost :</string>
-    <string name="spare_parts_">Spare Parts :</string>
+    <string name="spare_parts_">Spare Parts </string>
     <string name="tax_">Tax :</string>
     <string name="extra_charge_">Extra Charge :</string>
     <string name="fawry">Fawry</string>
@@ -42,6 +42,7 @@
     <string name="insurance_settlement">Insurance Settlement</string>
     <string name="transfer">Transfer</string>
     <string name="cl">Credit Letters</string>
+
     <string name="other">Other</string>
     <string name="save_and_proceed_to_payment">Save And Proceed To Payment</string>
     <string name="or">OR</string>
@@ -70,6 +71,11 @@ VAT: 340-250-73</string>
     <string name="seprator">__________________________________________________________________</string>
     <string name="find_unit_by">Find Unit By:</string>
     <string name="bank_transfer">Bank Transfer</string>
+    <string name="payment_succeeded">Payment Succeeded</string>
+
     <string name="recipt_image">recipt image</string>
+    <string name="fawry_username">Fawry UserName</string>
+    <string name="fawry_password">Fawry Password</string>
+    <string name="confirm">confirm</string>
 
 </resources>

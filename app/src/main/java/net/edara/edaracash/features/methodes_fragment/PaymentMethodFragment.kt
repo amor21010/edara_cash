@@ -12,12 +12,14 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.edara.domain.models.payment.PaymentRequest
 import net.edara.domain.models.print.PrintResponse
 import net.edara.edaracash.MainActivity
 import net.edara.edaracash.R
 import net.edara.edaracash.databinding.FragmentMethodBinding
+import net.edara.edaracash.features.dialogs.FawryAuthDialogFragment
 import net.edara.edaracash.features.dialogs.PaymentProssessDialogFragment
 
 @AndroidEntryPoint
@@ -25,22 +27,21 @@ class PaymentMethodFragment : Fragment() {
     private lateinit var paymentRequest: PaymentRequest
     lateinit var binding: FragmentMethodBinding
     private val viewModel: PaymentViewModel by viewModels()
-
+    private lateinit var fawryAuthDialog: FawryAuthDialogFragment
     private val dialog = PaymentProssessDialogFragment()
     lateinit var invoice: PrintResponse.Data
+    private var isInsurance = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentMethodBinding.inflate(layoutInflater, container, false)
         paymentRequest = PaymentMethodFragmentArgs.fromBundle(requireArguments()).paymentRequest
+        isInsurance = PaymentMethodFragmentArgs.fromBundle(requireArguments()).isInsurance
         lifecycleScope.launch {
-            viewModel.getUnitInfo(paymentRequest.requestIdentifers!!)
+            viewModel.getUnitInfo(paymentRequest.requestIdentifers!!, isInsurance = isInsurance)
         }
 
-
-
         binding.cash.setOnClickListener {
-
             pay(1)
         }
         binding.cheque.setOnClickListener {
@@ -98,20 +99,34 @@ class PaymentMethodFragment : Fragment() {
         viewModel.unitInfo.asLiveData().observe(viewLifecycleOwner) { resultState ->
             when (resultState) {
                 is ResultState.Success -> {
+                    binding.layout.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
                     invoice = resultState.unitInfo!!
                 }
                 is ResultState.Updated -> {
+                    binding.layout.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
                     invoice = resultState.unitInfo!!
-                    dismissDialog()
-                    Toast.makeText(requireContext(), "Payment Succeeded", Toast.LENGTH_LONG).show()
-                    findNavController().navigateUp()
+                    dialog.changeView()
+                    lifecycleScope.launch {
+                        delay(3000).apply {
+                            dismiss()
+                        }
+                    }
+                }
+                ResultState.Unauthorized -> showUnauthorizedDialog()
+                is ResultState.Error -> {
+                    Toast.makeText(
+                        requireContext(), "Request Failed ${resultState.msg}", Toast.LENGTH_LONG
+                    ).show()
                 }
                 else -> {
+                    binding.layout.visibility = View.GONE
+                    binding.progressBar.visibility = View.VISIBLE
                 }
             }
 
         }
-
 
         return binding.root
     }
@@ -141,35 +156,89 @@ class PaymentMethodFragment : Fragment() {
     }
 
     private fun pay(methodID: Int) {
+        val total = invoice.grandTotal.toString().toFloat() + paymentRequest.extraCharge.toString()
+            .toFloat() + paymentRequest.tax.toString()
+            .toFloat() - paymentRequest.discount.toString().toFloat()
 
-                when (methodID) {
+        when (methodID) {
 
-                    9 -> {
-
-                        val total = invoice.grandTotal.toString().toFloat() +
-                                paymentRequest.extraCharge.toString().toFloat() +
-                                paymentRequest.tax.toString().toFloat() -
-                                paymentRequest.discount.toString().toFloat()
-
-                        (requireActivity() as MainActivity).requestPayment(total) { transitionNo ->
-                            payToTheApi(methodID, transitionNo)
-                        }
-                    }
-
-
-                    else -> {
-                        payToTheApi(methodID)
-                    }
+            9 -> {
+                (requireActivity() as MainActivity).requestPayment(total) { transitionNo ->
+                    payToTheApi(methodID, transitionNo)
                 }
+            }
+            5 -> {
+                viewModel.getStoredFawryUser().asLiveData()
+                    .observe(viewLifecycleOwner) { fawryUser ->
+                        if (fawryUser == null) {
+                            createFawryDialog(total, methodID)
+                        } else {
+                            if (!fawryUser.username.isNullOrEmpty() && !fawryUser.password.isNullOrEmpty()) payWithFawry(
+                                fawryUser.username,
+                                fawryUser.password,
+                                total,
+                                ({ fawryTransactionNumber ->
+                                    payToTheApi(methodID, fawryTransactionNumber)
+                                })
+                            )
+                            else createFawryDialog(total, methodID)
+                        }
 
+                    }
+            }
+
+            else -> {
+                payToTheApi(methodID)
+            }
+        }
+    }
+
+    private fun createFawryDialog(total: Float, methodID: Int) {
+
+        if (::fawryAuthDialog.isInitialized) showFawryDialog()
+        else {
+            fawryAuthDialog = FawryAuthDialogFragment { username, password ->
+                (requireActivity() as MainActivity).fawryPay(name = username,
+                    password = password,
+                    amount = total.toDouble(),
+                    onSuccess = { fawryReference ->
+                        payToTheApi(methodID, fawryReference)
+                        viewModel.saveUserData(username, password)
+                    })
+                showFawryDialog()
+            }
+        }
 
     }
+
+    private fun showFawryDialog() {
+        if (!fawryAuthDialog.isVisible) fawryAuthDialog.show(
+            requireActivity().supportFragmentManager, "Fawry Auth"
+        )
+    }
+
+    private fun payWithFawry(
+        userName: String, password: String, total: Float, onSuccess: (fawryRefrance: String) -> Unit
+    ) {
+        (requireActivity() as MainActivity).fawryPay(name = userName,
+            password = password,
+            amount = total.toDouble(),
+            onSuccess = { fawryReference ->
+                onSuccess(fawryReference)
+            })
+    }
+
 
     private fun payToTheApi(methodID: Int, transitionNo: String? = null) {
         paymentRequest =
             paymentRequest.copy(paymentMethodId = methodID, transactionNo = transitionNo)
-        viewModel.makePayment(paymentRequest)
+        viewModel.makePayment(paymentRequest, isInsurance)
 
+    }
+
+    private fun dismiss() {
+        dismissDialog()
+        findNavController().navigateUp()
     }
 
 

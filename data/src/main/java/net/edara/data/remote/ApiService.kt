@@ -20,27 +20,43 @@ interface ApiService {
     @POST("Auth/Login")
     suspend fun login(@Body requestDto: LoginRequestDto): LoginResponse
 
-    @POST("Request/GetAll")
-    suspend fun getAllServices(
-        @Body requestDto: GetAllServicesRequestDto,
-        @Header("authorization") auth: String
-    ): GetAllServiceResonse
-
-    @POST("Request/Print")
-    suspend fun printServices(
-        @Body requestDto: PrintRequest,
-        @Header("authorization") auth: String
-    ): PrintResponse
 
     @GET("Auth/GetProfile")
     suspend fun getUserProfile(
         @Header("authorization") auth: String
     ): ProfileResponse
 
-    @PUT("Request/PayAll")
-    suspend fun payAll(
+    @PUT("PrivateServiceRequest/PayAll")
+    suspend fun privateServicePayAll(
         @Body paymentRequest: PaymentRequest,
         @Header("authorization") auth: String
     ): PaymentResponse
+    @POST("PrivateServiceRequest/GetAll")
+    suspend fun privateServiceGetAllServices(
+        @Body requestDto: GetAllServicesRequestDto,
+        @Header("authorization") auth: String
+    ): GetAllServiceResonse
+
+    @POST("PrivateServiceRequest/Print")
+    suspend fun privateServicePrintServices(
+        @Body requestDto: PrintRequest,
+        @Header("authorization") auth: String
+    ): PrintResponse
+    @PUT("InsuranceRequest/PayAll")
+    suspend fun insuranceServicePayAll(
+        @Body paymentRequest: PaymentRequest,
+        @Header("authorization") auth: String
+    ): PaymentResponse
+    @POST("InsuranceRequest/GetAll")
+    suspend fun insuranceServicGetAllServices(
+        @Body requestDto: GetAllServicesRequestDto,
+        @Header("authorization") auth: String
+    ): GetAllServiceResonse
+
+    @POST("PrivateServiceRequest/Print")
+    suspend fun insuranceServicPrintServices(
+        @Body requestDto: PrintRequest,
+        @Header("authorization") auth: String
+    ): PrintResponse
 
 }

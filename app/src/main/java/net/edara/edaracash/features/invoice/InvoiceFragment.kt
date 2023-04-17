@@ -30,6 +30,8 @@ class InvoiceFragment : Fragment() {
     private val viewModel: InvoiceViewModel by activityViewModels()
     private lateinit var binding: FragmentInvoiceBinding
     private var permissions: List<String?> = listOf()
+    lateinit var invoice: InvoiceBuilder
+    private var isInsurance = false
 
     @Inject
     lateinit var printerUtil: PrinterUtil
@@ -37,9 +39,10 @@ class InvoiceFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentInvoiceBinding.inflate(inflater, container, false)
-        var invoice: InvoiceBuilder = InvoiceFragmentArgs.fromBundle(requireArguments()).invoice
+        invoice = InvoiceFragmentArgs.fromBundle(requireArguments()).invoice
+        isInsurance = InvoiceFragmentArgs.fromBundle(requireArguments()).isInsurance
         lifecycleScope.launch {
-            viewModel.getUnitInfo(servicesId = invoice.serviceList.map { it.id })
+            viewModel.getUnitInfo(servicesId = invoice.serviceList.map { it.id }, isInsurance)
         }
 
 
@@ -55,12 +58,16 @@ class InvoiceFragment : Fragment() {
                 is ResultState.Success -> {
                     invoice = invoice.copy(unitInfo = state.unitInfo!!)
                     bindUnitInfo(invoice)
+                    showHideButtons()
                 }
                 ResultState.Unauthorized -> {
                     createUnauthorizedAlert()
                 }
 
-                else -> {}
+                else -> {
+                    showHideButtons()
+
+                }
             }
 
         }
@@ -70,38 +77,44 @@ class InvoiceFragment : Fragment() {
 
 
         binding.payButton.setOnClickListener {
-            try {
-                Log.d("onCreateView", "onCreateView: ${invoice.unitInfo.receiptNo}")
-                val recieptNo = (invoice.unitInfo.receiptNo.toString().toDouble())
-                if (recieptNo != 0.0) Toast.makeText(
-                    requireContext(), "This Service Has Been Paid Before.", Toast.LENGTH_SHORT
-                ).show()
-            } catch (e: Exception) {
-                if (permissions.contains(Consts.PAY_PERMISSION)) findNavController().navigate(
+            val allowedToPayInsurance =
+                isInsurance && permissions.contains(Consts.INSURANCE_PAY_PERMISSION)
+            val allowedToPayPrivetService =
+                !isInsurance && permissions.contains(Consts.PRIVET_SERVICE_PAY_PERMISSION)
+            if (allowedToPayInsurance || allowedToPayPrivetService)
+                findNavController().navigate(
                     InvoiceFragmentDirections.actionInvoiceFragmentToPaymentMethodFragment(
-                        PaymentRequest(
+                        /* paymentRequest = */ PaymentRequest(
                             discount = invoice.extrasDto.discount,
                             extraCharge = invoice.extrasDto.extraCharge,
                             tax = invoice.extrasDto.tax,
                             paymentMethodId = null,
                             requestIdentifers = invoice.serviceList.map { it.id },
                             transactionNo = null
-                        )
+                        ), isInsurance
                     )
                 ) else Toast.makeText(
-                    requireContext(),
-                    "You Are Not Allowed To Preform This Action",
-                    Toast.LENGTH_SHORT
-                ).show()
+                requireContext(),
+                "You Are Not Allowed To Preform This Action",
+                Toast.LENGTH_SHORT
+            ).show()
 
-            }
+        }
 
+
+
+        binding.cancelButton.setOnClickListener {
+            findNavController().navigateUp()
         }
 
         binding.print.setOnClickListener {
             Log.d("TAG", "onCreateView: $permissions")
             invoice.unitInfo.receiptNo
-            if (permissions.contains(Consts.PRINT_PERMISSION))
+            val allowedToPrintInsurance =
+                isInsurance && permissions.contains(Consts.INSURANCE_PRINT_PERMISSION)
+            val allowedToPrintPrivetService =
+                !isInsurance && permissions.contains(Consts.PRIVET_SERVICE_PRINT_PERMISSION)
+            if (allowedToPrintInsurance || allowedToPrintPrivetService)
                 printView()
             else Toast.makeText(
                 requireContext(),
@@ -164,6 +177,22 @@ class InvoiceFragment : Fragment() {
         adapter.submitList(invoice.serviceList)
         binding.services.adapter = adapter
         bindUnitInfo(invoice)
+    }
+
+    fun showHideButtons() {
+        try {
+
+            //The receipt has been paid before
+            val receiptNo = (invoice.unitInfo.receiptNo.toString().toDouble())
+            if (receiptNo != 0.0) {
+                binding.payButton.visibility = View.GONE
+                binding.cancelButton.visibility = View.VISIBLE
+            }
+        } catch (e: Exception) {
+            //The receipt has not been paid before
+            binding.payButton.visibility = View.VISIBLE
+            binding.cancelButton.visibility = View.GONE
+        }
     }
 
 }

@@ -16,5 +16,5 @@
     <string name="size_paper">paper size</string>
     <string name="connect_method">connect method</string>
     <string name="printer_settings">Printer Settings</string>
-    <string name="printing_inprogress">جاري الطباعة ...</string>
+    <string name="printing_inprogress">جاري الطباعة …</string>
 </resources>

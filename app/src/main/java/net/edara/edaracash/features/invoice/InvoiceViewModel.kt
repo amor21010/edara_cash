@@ -8,14 +8,16 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import net.edara.domain.models.print.PrintResponse
-import net.edara.domain.use_case.PrintUseCase
+import net.edara.domain.use_case.InsuranceServicePrintUseCase
+import net.edara.domain.use_case.PrivetServicePrintUseCase
 import net.edara.edaracash.features.util.TokenUtils
 import net.edara.edaracash.models.Consts
 import javax.inject.Inject
 
 @HiltViewModel
 class InvoiceViewModel @Inject constructor(
-    private val printUseCase: PrintUseCase,
+    private val privetServicePrintUseCase: PrivetServicePrintUseCase,
+    private val insuranceServicePrintUseCase: InsuranceServicePrintUseCase,
     private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
     private val _unitInfo = MutableStateFlow<ResultState>(
@@ -42,12 +44,15 @@ class InvoiceViewModel @Inject constructor(
         getToken()
     }
 
-    suspend fun getUnitInfo(servicesId: List<String?>) {
+    suspend fun getUnitInfo(servicesId: List<String?>, isInsurance: Boolean) {
         _unitInfo.value = ResultState.Loading
         try {
-            val result = printUseCase(
+            val result = if (isInsurance) insuranceServicePrintUseCase(
                 servicesId, "bearer $_token"
-            )
+            ) else
+                privetServicePrintUseCase(
+                    servicesId, "bearer $_token"
+                )
             if (result.data != null) _unitInfo.value =
                 ResultState.Success(result.data)
             else result.failures?.requestIdentifiers?.forEach {

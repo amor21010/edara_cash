@@ -11,27 +11,30 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import net.edara.domain.models.getAllService.GetAllServiceResonse.Data.Service
 import net.edara.domain.models.print.PrintResponse
-import net.edara.domain.use_case.PrintUseCase
+import net.edara.domain.use_case.InsuranceServicePrintUseCase
+import net.edara.domain.use_case.PrivetServicePrintUseCase
 import net.edara.edaracash.models.Consts.USER_TOKEN
 import javax.inject.Inject
 
 @HiltViewModel
 class ResultViewModel @Inject constructor(
-    private val printUseCase: PrintUseCase, private val dataStore: DataStore<Preferences>
+    private val privetServicePrintUseCase: PrivetServicePrintUseCase,
+    private val insuranceServicePrintUseCase: InsuranceServicePrintUseCase,
+    private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
 
     private val _unitInfo = MutableStateFlow<ResultState>(ResultState.Init)
     val unitInfo = _unitInfo
 
-    fun getUnitInfo(servicesId: String?) {
+    fun getUnitInfo(servicesId: String?, isInsurance: Boolean) {
         _unitInfo.value = ResultState.Loading
         viewModelScope.launch {
             dataStore.data.collect { preferences ->
                 val token = preferences[USER_TOKEN]
                 try {
-                    val result = printUseCase(
+                    val result = if (!isInsurance) privetServicePrintUseCase(
                         listOf(servicesId), "bearer $token"
-                    )
+                    ) else insuranceServicePrintUseCase(listOf(servicesId), "bearer $token")
 
                     if (result.data != null) _unitInfo.value = ResultState.Success(result.data)
                     else result.failures?.requestIdentifiers?.forEach {

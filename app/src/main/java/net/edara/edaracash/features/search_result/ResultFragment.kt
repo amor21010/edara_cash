@@ -23,15 +23,17 @@ class ResultFragment : Fragment() {
     private var unitInfo: PrintResponse.Data? = null
     private val viewModel: ResultViewModel by viewModels()
     private var selectedItems = listOf<Service>()
+    private var isInsurance = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentResultBinding.inflate(inflater, container, false)
         val services = ResultFragmentArgs.fromBundle(requireArguments()).services
+         isInsurance = ResultFragmentArgs.fromBundle(requireArguments()).isInsurance
 
 
-        viewModel.getUnitInfo(servicesId = services[0].id)
+        viewModel.getUnitInfo(servicesId = services[0].id, isInsurance)
         viewModel.unitInfo.asLiveData().observe(viewLifecycleOwner) { resultState ->
             when (resultState) {
                 is ResultState.Error -> showError()
@@ -61,7 +63,7 @@ class ResultFragment : Fragment() {
         binding.payButton.setOnClickListener {
             findNavController().navigate(
                 ResultFragmentDirections.actionResultFragmentToPaymentFragment(
-                    selectedItems.toTypedArray(), unitInfo
+                    selectedItems.toTypedArray(), unitInfo, isInsurance
                 )
             )
         }
@@ -109,7 +111,7 @@ class ResultFragment : Fragment() {
             if (selectedItems.isNotEmpty()) viewModel.addServiceToSelection(services = item)
             else findNavController().navigate(
                 ResultFragmentDirections.actionResultFragmentToPaymentFragment(
-                    arrayOf(item), unitInfo
+                    arrayOf(item), unitInfo,isInsurance
                 )
             )
         }

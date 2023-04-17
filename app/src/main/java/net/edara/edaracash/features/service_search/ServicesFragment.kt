@@ -69,7 +69,7 @@ class ServicesFragment : Fragment() {
                             servicesList = response.service.toTypedArray()
                             findNavController().navigate(
                                 ServicesFragmentDirections.actionServicesFragmentToResultFragment(
-                                    servicesList
+                                    servicesList, false
                                 )
                             )
                             viewModel.resetState()

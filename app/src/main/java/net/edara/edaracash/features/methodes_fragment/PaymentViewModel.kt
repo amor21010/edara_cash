@@ -2,6 +2,7 @@ package net.edara.edaracash.features.methodes_fragment
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,18 +11,23 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import net.edara.domain.models.payment.PaymentRequest
 import net.edara.domain.models.print.PrintResponse
-import net.edara.domain.use_case.PaymentUseCase
-import net.edara.domain.use_case.PrintUseCase
+import net.edara.domain.use_case.InsuranceServicePaymentUseCase
+import net.edara.domain.use_case.InsuranceServicePrintUseCase
+import net.edara.domain.use_case.PrivetServicePaymentUseCase
+import net.edara.domain.use_case.PrivetServicePrintUseCase
+import net.edara.edaracash.models.Consts.FAWRY_USER_PASSWORD
+import net.edara.edaracash.models.Consts.FAWRY_USER_USERNAME
 import net.edara.edaracash.models.Consts.USER_TOKEN
-
 import javax.inject.Inject
 
 @HiltViewModel
 class PaymentViewModel @Inject constructor(
-    private val paymentUseCase: PaymentUseCase,
+    private val privetServicePaymentUseCase: PrivetServicePaymentUseCase,
+    private val insuranceServicePaymentUseCase: InsuranceServicePaymentUseCase,
+    private val insuranceServicePrintUseCase: InsuranceServicePrintUseCase,
 
     private val dataStore: DataStore<Preferences>,
-    private val printUseCase: PrintUseCase
+    private val privetServicePrintUseCase: PrivetServicePrintUseCase
 ) :
     ViewModel() {
     private val _paymentState = MutableStateFlow<PaymentState>(PaymentState.Init)
@@ -31,14 +37,18 @@ class PaymentViewModel @Inject constructor(
     )
     val unitInfo = _unitInfo
 
-     suspend fun getUnitInfo(servicesId: List<String?>, updating: Boolean = false) {
+    suspend fun getUnitInfo(
+        servicesId: List<String?>,
+        updating: Boolean = false,
+        isInsurance: Boolean
+    ) {
         _unitInfo.value = ResultState.Loading
         dataStore.data.collect { preferences ->
             val token = preferences[USER_TOKEN]
             try {
-                val result = printUseCase(
+                val result = if (isInsurance) privetServicePrintUseCase(
                     servicesId, "bearer $token"
-                )
+                ) else insuranceServicePrintUseCase(servicesId, "bearer $token")
 
                 if (result.data != null)
                     _unitInfo.value =
@@ -62,7 +72,7 @@ class PaymentViewModel @Inject constructor(
         }
     }
 
-    fun makePayment(paymentRequest: PaymentRequest) {
+    fun makePayment(paymentRequest: PaymentRequest, isInsurance: Boolean) {
         viewModelScope.launch {
             dataStore.data.collect {
                 _paymentState.value = PaymentState.Loading
@@ -70,13 +80,14 @@ class PaymentViewModel @Inject constructor(
                 if (token == null) _paymentState.value = PaymentState.Unauthorized
                 else {
                     try {
-                        val response = paymentUseCase.invoke(paymentRequest, token)
+                        val response = if (isInsurance) privetServicePaymentUseCase.invoke(
+                            paymentRequest, token
+                        ) else insuranceServicePaymentUseCase.invoke(paymentRequest, token)
                         if (response.data != null && response.data!!) {
                             _paymentState.value = PaymentState.Succeeded
                             paymentRequest.requestIdentifers?.let { it1 ->
                                 getUnitInfo(
-                                    servicesId = it1,
-                                    updating = true
+                                    servicesId = it1, updating = true, isInsurance
                                 )
                             }
 
@@ -101,6 +112,32 @@ class PaymentViewModel @Inject constructor(
 
     }
 
+    fun getStoredFawryUser(): StateFlow<FawryUser?> {
+        val flow: MutableStateFlow<FawryUser?> = MutableStateFlow(FawryUser("", ""))
+        viewModelScope.launch {
+            dataStore.data.collect {
+                flow.emit(
+                    FawryUser(
+                        it[FAWRY_USER_USERNAME], it[FAWRY_USER_PASSWORD]
+                    )
+                )
+            }
+        }
+
+        return flow
+    }
+
+    fun saveUserData(username: String, password: String) {
+        viewModelScope.launch {
+            dataStore.edit {
+                it[FAWRY_USER_USERNAME] = username
+                it[FAWRY_USER_PASSWORD] = password
+
+            }
+        }
+    }
+
+    data class FawryUser(val username: String?, val password: String?)
     sealed class PaymentState {
         object Init : PaymentState()
         object Loading : PaymentState()

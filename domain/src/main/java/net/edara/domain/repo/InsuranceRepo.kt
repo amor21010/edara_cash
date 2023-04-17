@@ -7,14 +7,14 @@ import net.edara.domain.models.payment.PaymentResponse
 import net.edara.domain.models.print.PrintRequest
 import net.edara.domain.models.print.PrintResponse
 
-interface ServicesRepo {
-    suspend fun getAllServices(
+interface InsuranceRepo {
+    suspend fun getAllInsuranceServices(
         getAllServicesRequest: GetAllServicesRequestDto,
         authHeader: String
     ): GetAllServiceResonse
 
-    suspend fun printServices(printRequest: PrintRequest, authHeader: String): PrintResponse
-    suspend fun payServices(
+    suspend fun printInsuranceServices(printRequest: PrintRequest, authHeader: String): PrintResponse
+    suspend fun payInsuranceServices(
         request: PaymentRequest,
         authHeader: String
     ): PaymentResponse

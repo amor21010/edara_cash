@@ -11,13 +11,13 @@ import kotlinx.coroutines.launch
 import net.edara.domain.models.getAllService.GetAllServiceResonse
 import net.edara.domain.models.getAllService.GetAllServiceResonse.Data.Service
 import net.edara.domain.models.getAllService.GetAllServicesRequestDto
-import net.edara.domain.use_case.GetAllServicesUseCase
+import net.edara.domain.use_case.GetAllPrivetServicesUseCase
 import net.edara.edaracash.models.Consts.USER_TOKEN
 import javax.inject.Inject
 
 @HiltViewModel
 class ServicesViewModel @Inject constructor(
-    private val getAllServicesUseCase: GetAllServicesUseCase,
+    private val getAllPrivetServicesUseCase: GetAllPrivetServicesUseCase,
     private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
     private val _searchState = MutableStateFlow<SearchState>(SearchState.Init)
@@ -29,7 +29,7 @@ class ServicesViewModel @Inject constructor(
             dataStore.data.collect { preferences ->
                 val token = preferences[USER_TOKEN]
                 try {
-                    val result = getAllServicesUseCase(
+                    val result = getAllPrivetServicesUseCase(
                         GetAllServicesRequestDto(
                             filter = GetAllServicesRequestDto.Filter(
                                 analysisCode = analysisCode, unitNo = unitNumber

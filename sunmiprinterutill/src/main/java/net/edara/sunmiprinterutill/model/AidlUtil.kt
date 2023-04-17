@@ -1,6 +1,6 @@
 
 package net.edara.sunmiprinterutill.model
-/*
+
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -19,8 +19,6 @@ import woyou.aidlservice.jiuiv5.IWoyouService
 
 
 class AidlUtil private constructor() {
-
-
 
     private var woyouService: IWoyouService? = null
     private var context: Context? = null
@@ -101,7 +99,7 @@ class AidlUtil private constructor() {
             info.add(woyouService!!.printerSerialNo)
             info.add(woyouService!!.printerModal)
             info.add(woyouService!!.printerVersion)
-            info.add(printerCallback.result)
+            printerCallback.getResult()?.let { info.add(it) }
             info.add("")
             //info.add(woyouService.getServiceVersion());
             val packageManager = context!!.packageManager
@@ -251,4 +249,4 @@ class AidlUtil private constructor() {
         private val SERVICE_ACTION = "woyou.aidlservice.jiuiv5.IWoyouService"
         val instance = AidlUtil()
     }
-}*/
+}

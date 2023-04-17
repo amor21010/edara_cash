@@ -1,14 +1,10 @@
 @file:Suppress("DEPRECATION")
 
-package net.edara.edaracash.geidea
+package net.edara.edaracash.paymentMethods.geidea
 
 
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import net.edara.edaracash.R
 
 
 fun isGeideaInstalled(context: Context, uri: String): Boolean {

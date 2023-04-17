@@ -23,6 +23,7 @@ class PaymentFragment : Fragment() {
     var discount = 0.0
     var tax = 0.0
     var extraCharge = 0.0
+    private var isInsurance = false
     private lateinit var binding: FragmentPaymentBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -32,6 +33,7 @@ class PaymentFragment : Fragment() {
 
         val services = PaymentFragmentArgs.fromBundle(requireArguments()).services.toList()
         val unitInfo = PaymentFragmentArgs.fromBundle(requireArguments()).unitInfo
+        isInsurance = PaymentFragmentArgs.fromBundle(requireArguments()).isInsurance
 
 
         binding.unitNo.text = unitInfo?.unitNumber
@@ -97,7 +99,7 @@ class PaymentFragment : Fragment() {
 
         findNavController().navigate(
             PaymentFragmentDirections.actionPaymentFragmentToInvoiceFragment(
-                invoiceBuilder
+                invoiceBuilder, isInsurance
             )
         )
     }

@@ -16,7 +16,7 @@ public class PrinterUtil {
     public final AidlUtil aidlUtil;
 
     public PrinterUtil(Context context) {
-        aidlUtil = AidlUtil.getInstance();
+        aidlUtil = AidlUtil.Companion.getInstance();
         aidlUtil.connectPrinterService(context);
     }
 

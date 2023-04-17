@@ -1,8 +1,8 @@
-package net.edara.edaracash.geidea
+package net.edara.edaracash.paymentMethods.geidea
 
 import org.json.JSONObject
 
-data class PaymentResult(
+data class GeideaPaymentResult(
     val transactionRefNo: String,
     val cardScheme: String,
     val maskedCardNo: String,
@@ -20,10 +20,10 @@ data class PaymentResult(
 
 
     companion object {
-        fun fromJson(result: String): PaymentResult {
+        fun fromJson(result: String): GeideaPaymentResult {
             val jsonObject = JSONObject(result)
 
-            return PaymentResult(
+            return GeideaPaymentResult(
                 transactionRefNo = jsonObject.optString("rrn"),
                 cardScheme = jsonObject.optString("card_scheme"),
                 maskedCardNo = jsonObject.optString("pan"),

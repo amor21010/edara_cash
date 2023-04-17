@@ -10,13 +10,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import net.edara.domain.models.getAllService.GetAllServiceResonse
 import net.edara.domain.models.getAllService.GetAllServicesRequestDto
-import net.edara.domain.use_case.GetAllServicesUseCase
+import net.edara.domain.use_case.GetAllInsuranceServicesUseCase
 import net.edara.edaracash.features.service_search.SearchState
 import net.edara.edaracash.models.Consts
 import javax.inject.Inject
+
 @HiltViewModel
 class InsuranceViewModel @Inject constructor(
-    private val getAllServicesUseCase: GetAllServicesUseCase,
+    private val getAllInsuranceServicesUseCase: GetAllInsuranceServicesUseCase,
     private val dataStore: DataStore<Preferences>
 ):ViewModel() {
     private val _searchState = MutableStateFlow<SearchState>(SearchState.Init)
@@ -28,15 +29,11 @@ class InsuranceViewModel @Inject constructor(
             dataStore.data.collect { preferences ->
                 val token = preferences[Consts.USER_TOKEN]
                 try {
-                    val filter = if (analysisCode != null)
-                        GetAllServicesRequestDto.Filter(
-                            analysisCode = analysisCode, unitNo = null
-                        ) else GetAllServicesRequestDto.Filter(
-                        analysisCode = null, unitNo = unitNumber
-                    )
-                    val result = getAllServicesUseCase(
+                    val result = getAllInsuranceServicesUseCase(
                         GetAllServicesRequestDto(
-                            filter = filter,
+                            filter = GetAllServicesRequestDto.Filter(
+                                analysisCode = analysisCode, unitNo = unitNumber
+                            ),
                             sorting = GetAllServicesRequestDto.Sorting(),
                             paginator = GetAllServicesRequestDto.Paginator()
                         ), "bearer $token"

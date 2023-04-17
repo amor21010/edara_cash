@@ -69,7 +69,7 @@ class InsuranceFragment : Fragment() {
                             servicesList = response.service.toTypedArray()
                             findNavController().navigate(
                                 InsuranceFragmentDirections.actionInsuranceFragmentToResultFragment(
-                                    servicesList
+                                    servicesList, true
                                 )
                             )
                             viewModel.resetState()
@@ -114,5 +114,4 @@ class InsuranceFragment : Fragment() {
 
 
     }
-
 }
