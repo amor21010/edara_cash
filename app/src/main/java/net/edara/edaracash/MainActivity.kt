@@ -290,12 +290,16 @@ class MainActivity : AppCompatActivity() {
     )
 
     fun printReceipt(view: View) {
-        /*    if (isGeideaInstalled(this, geideaPackageName))
+        try {
+            if (isGeideaInstalled(this, geideaPackageName))
                 printer.sendViewToPrinter(view)
-            else*/
-        fawryPrint(view)
-        view.requestLayout()
-        view.invalidate()
+            else
+                fawryPrint(view)
+            view.requestLayout()
+            view.invalidate()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Printer Not Found", Toast.LENGTH_SHORT).show()
+        }
     }
 
 }

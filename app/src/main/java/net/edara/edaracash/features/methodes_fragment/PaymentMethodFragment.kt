@@ -1,7 +1,9 @@
 package net.edara.edaracash.features.methodes_fragment
 
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +33,20 @@ class PaymentMethodFragment : Fragment() {
     private val dialog = PaymentProssessDialogFragment()
     lateinit var invoice: PrintResponse.Data
     private var isInsurance = false
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        paymentRequest = PaymentMethodFragmentArgs.fromBundle(requireArguments()).paymentRequest
+    }
+
+    override fun onStart() {
+        super.onStart()
+        paymentRequest = PaymentMethodFragmentArgs.fromBundle(requireArguments()).paymentRequest
+    }
+
+    override fun onResume() {
+        super.onResume()
+        paymentRequest = PaymentMethodFragmentArgs.fromBundle(requireArguments()).paymentRequest
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -59,7 +75,7 @@ class PaymentMethodFragment : Fragment() {
 
         }
         binding.cL.setOnClickListener {
-            pay(6)
+            pay(7)
 
         }
         binding.insurance.setOnClickListener {
@@ -171,17 +187,10 @@ class PaymentMethodFragment : Fragment() {
                 viewModel.getStoredFawryUser().asLiveData()
                     .observe(viewLifecycleOwner) { fawryUser ->
                         if (fawryUser == null) {
-                            createFawryDialog(total, methodID)
+                            createFawryDialog(total, "", "")
                         } else {
-                            if (!fawryUser.username.isNullOrEmpty() && !fawryUser.password.isNullOrEmpty()) payWithFawry(
-                                fawryUser.username,
-                                fawryUser.password,
-                                total,
-                                ({ fawryTransactionNumber ->
-                                    payToTheApi(methodID, fawryTransactionNumber)
-                                })
-                            )
-                            else createFawryDialog(total, methodID)
+                            if (!fawryUser.username.isNullOrEmpty() && !fawryUser.password.isNullOrEmpty())
+                                createFawryDialog(total, fawryUser.username, fawryUser.password)
                         }
 
                     }
@@ -193,39 +202,30 @@ class PaymentMethodFragment : Fragment() {
         }
     }
 
-    private fun createFawryDialog(total: Float, methodID: Int) {
+    private fun createFawryDialog(total: Float, savedUserName: String, savedPassword: String) {
 
         if (::fawryAuthDialog.isInitialized) showFawryDialog()
         else {
-            fawryAuthDialog = FawryAuthDialogFragment { username, password ->
-                (requireActivity() as MainActivity).fawryPay(name = username,
-                    password = password,
-                    amount = total.toDouble(),
-                    onSuccess = { fawryReference ->
-                        payToTheApi(methodID, fawryReference)
-                        viewModel.saveUserData(username, password)
-                    })
-                showFawryDialog()
-            }
+            fawryAuthDialog =
+                FawryAuthDialogFragment(savedUserName, savedPassword) { username, password ->
+                    (requireActivity() as MainActivity).fawryPay(
+                        name = username,
+                        password = password,
+                        amount = total.toDouble(),
+                        onSuccess = { fawryReference ->
+                            payToTheApi(5, fawryReference)
+                            viewModel.saveUserData(username, password)
+                        })
+                    showFawryDialog()
+                }
         }
 
     }
 
     private fun showFawryDialog() {
-        if (!fawryAuthDialog.isVisible) fawryAuthDialog.show(
+        if (!fawryAuthDialog.isAdded && !fawryAuthDialog.isVisible) fawryAuthDialog.show(
             requireActivity().supportFragmentManager, "Fawry Auth"
         )
-    }
-
-    private fun payWithFawry(
-        userName: String, password: String, total: Float, onSuccess: (fawryRefrance: String) -> Unit
-    ) {
-        (requireActivity() as MainActivity).fawryPay(name = userName,
-            password = password,
-            amount = total.toDouble(),
-            onSuccess = { fawryReference ->
-                onSuccess(fawryReference)
-            })
     }
 
 

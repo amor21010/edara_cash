@@ -11,7 +11,11 @@ import net.edara.edaracash.R
 import net.edara.edaracash.databinding.FawryAuthDialogBinding
 
 
-class FawryAuthDialogFragment(val onConfirm: (userName: String, Password: String) -> Unit) :
+class FawryAuthDialogFragment(
+    private val savedUserName: String,
+    private val savedPassword: String,
+    val onConfirm: (userName: String, Password: String) -> Unit
+) :
     DialogFragment() {
     private lateinit var binder: FawryAuthDialogBinding
 
@@ -23,6 +27,8 @@ class FawryAuthDialogFragment(val onConfirm: (userName: String, Password: String
 
         builder.setView(binder.root)
         builder.setCancelable(false)
+        binder.userName.editText?.setText(savedUserName)
+        binder.password.editText?.setText(savedPassword)
         binder.confirmButton.setOnClickListener {
             val userName = binder.userName.editText?.text.toString()
             val password = binder.password.editText?.text.toString()

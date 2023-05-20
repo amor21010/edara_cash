@@ -2,6 +2,7 @@ package net.edara.edaracash.features.invoice
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -53,9 +54,11 @@ class InvoiceViewModel @Inject constructor(
                 privetServicePrintUseCase(
                     servicesId, "bearer $_token"
                 )
-            if (result.data != null) _unitInfo.value =
-                ResultState.Success(result.data)
-            else result.failures?.requestIdentifiers?.forEach {
+            if (result.data != null) {
+                _unitInfo.value =
+                    ResultState.Success(result.data)
+                dataStore.edit { it[Consts.IS_PAYMENT_FIRST_TIME] = true }
+            } else result.failures?.requestIdentifiers?.forEach {
                 _unitInfo.value =
                     ResultState.Error(it)
             }

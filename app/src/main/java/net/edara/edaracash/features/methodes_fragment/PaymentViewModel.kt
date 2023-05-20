@@ -25,7 +25,6 @@ class PaymentViewModel @Inject constructor(
     private val privetServicePaymentUseCase: PrivetServicePaymentUseCase,
     private val insuranceServicePaymentUseCase: InsuranceServicePaymentUseCase,
     private val insuranceServicePrintUseCase: InsuranceServicePrintUseCase,
-
     private val dataStore: DataStore<Preferences>,
     private val privetServicePrintUseCase: PrivetServicePrintUseCase
 ) :
@@ -36,7 +35,7 @@ class PaymentViewModel @Inject constructor(
         ResultState.Init
     )
     val unitInfo = _unitInfo
-
+    private var isFirstCall = false
     suspend fun getUnitInfo(
         servicesId: List<String?>,
         updating: Boolean = false,
@@ -73,41 +72,46 @@ class PaymentViewModel @Inject constructor(
     }
 
     fun makePayment(paymentRequest: PaymentRequest, isInsurance: Boolean) {
+
+
         viewModelScope.launch {
             dataStore.data.collect {
+
                 _paymentState.value = PaymentState.Loading
                 val token = it[USER_TOKEN]
-                if (token == null) _paymentState.value = PaymentState.Unauthorized
-                else {
-                    try {
-                        val response = if (isInsurance) privetServicePaymentUseCase.invoke(
-                            paymentRequest, token
-                        ) else insuranceServicePaymentUseCase.invoke(paymentRequest, token)
-                        if (response.data != null && response.data!!) {
-                            _paymentState.value = PaymentState.Succeeded
-                            paymentRequest.requestIdentifers?.let { it1 ->
-                                getUnitInfo(
-                                    servicesId = it1, updating = true, isInsurance
-                                )
+                if (token == null) {
+                    _paymentState.value = PaymentState.Unauthorized
+                    return@collect
+                }
+                try {
+                    val response = if (isInsurance)insuranceServicePaymentUseCase.invoke(
+                        paymentRequest, token
+                    ) else privetServicePaymentUseCase.invoke(paymentRequest, token)
+                    if (response.data != null && response.data!!) {
+                        _paymentState.value = PaymentState.Succeeded
+                        paymentRequest.requestIdentifers?.let { it1 ->
+                            getUnitInfo(
+                                servicesId = it1, updating = true, isInsurance
+                            )
                             }
-
+                        //  it[IS_PAYMENT_FIRST_TIME] = false
                         } else {
-                            _paymentState.value = PaymentState.Failed(response.message)
+                        _paymentState.value =
+                            PaymentState.Failed("${response.message} ,${response.failures}")
 
-                        }
+                    }
 
                     } catch (e: Exception) {
-                        if (e.message.toString().uppercase().contains("UNAUTHORIZED")) {
-                            _paymentState.value = PaymentState.Unauthorized
+                    if (e.message.toString().uppercase().contains("UNAUTHORIZED")) {
+                        _paymentState.value = PaymentState.Unauthorized
 
-                        }
                     }
 
 
                 }
+                }
 
 
-            }
         }
 
     }

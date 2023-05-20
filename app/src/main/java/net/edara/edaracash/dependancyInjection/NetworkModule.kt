@@ -1,6 +1,6 @@
 package net.edara.edaracash.dependancyInjection
 
-import android.util.Log
+
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,16 +19,19 @@ object NetworkModule {
     @Provides
     fun provideOkHttp(
         interceptor: HttpLoggingInterceptor,
-    ): OkHttpClient =
+
+        ): OkHttpClient =
         OkHttpClient.Builder()
             .addNetworkInterceptor(interceptor)
             .build()
+
 
     @Singleton
     @Provides
     fun provideInt(): HttpLoggingInterceptor {
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+
         return interceptor
     }
 

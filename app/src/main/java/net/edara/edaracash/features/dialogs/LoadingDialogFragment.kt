@@ -38,7 +38,7 @@ class LoadingDialogFragment (): DialogFragment() {
                     null
                 )
             )
-        );
+        )
 
         dialog?.setCanceledOnTouchOutside(false)
     }
