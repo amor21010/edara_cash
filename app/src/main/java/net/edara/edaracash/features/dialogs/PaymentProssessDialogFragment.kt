@@ -15,8 +15,8 @@ import net.edara.edaracash.databinding.PaymentSuccessDialogBinding
 class PaymentProssessDialogFragment() : DialogFragment() {
     private lateinit var binder: PaymentSuccessDialogBinding
     fun changeView() {
-        binder.success.visibility = View.GONE
-        binder.sucess.visibility = View.VISIBLE
+        binder.successAnimation.visibility = View.GONE
+        binder.success.visibility = View.VISIBLE
     }
 
 

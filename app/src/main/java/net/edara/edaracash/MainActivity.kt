@@ -132,11 +132,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun fawryPay(
-        name: String, password: String, amount: Double, onSuccess: (transitionNo: String) -> Unit
+       amount: Double, onSuccess: (transitionNo: String) -> Unit
     ) {
         val fawryConnect: FawryConnect = FawryConnect.setup<IPCConnectivity.Builder>(
             ConnectionType.IPC, UserData(
-                username = name, password = password, userType = UserType.MCC
+                username = "302302", password = "135792", userType = UserType.MCC
             )
         ).setContext(applicationContext)
             .setConnectionCallBack(FawryConnect.OnConnectionCallBack(onConnected = {

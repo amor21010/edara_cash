@@ -3,7 +3,6 @@ package net.edara.edaracash.features.methodes_fragment
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +20,6 @@ import net.edara.domain.models.print.PrintResponse
 import net.edara.edaracash.MainActivity
 import net.edara.edaracash.R
 import net.edara.edaracash.databinding.FragmentMethodBinding
-import net.edara.edaracash.features.dialogs.FawryAuthDialogFragment
 import net.edara.edaracash.features.dialogs.PaymentProssessDialogFragment
 
 @AndroidEntryPoint
@@ -29,7 +27,6 @@ class PaymentMethodFragment : Fragment() {
     private lateinit var paymentRequest: PaymentRequest
     lateinit var binding: FragmentMethodBinding
     private val viewModel: PaymentViewModel by viewModels()
-    private lateinit var fawryAuthDialog: FawryAuthDialogFragment
     private val dialog = PaymentProssessDialogFragment()
     lateinit var invoice: PrintResponse.Data
     private var isInsurance = false
@@ -184,16 +181,11 @@ class PaymentMethodFragment : Fragment() {
                 }
             }
             5 -> {
-                viewModel.getStoredFawryUser().asLiveData()
-                    .observe(viewLifecycleOwner) { fawryUser ->
-                        if (fawryUser == null) {
-                            createFawryDialog(total, "", "")
-                        } else {
-                            if (!fawryUser.username.isNullOrEmpty() && !fawryUser.password.isNullOrEmpty())
-                                createFawryDialog(total, fawryUser.username, fawryUser.password)
-                        }
-
-                    }
+                (requireActivity() as MainActivity).fawryPay(
+                    amount = total.toDouble(),
+                    onSuccess = { fawryReference ->
+                        payToTheApi(5, fawryReference)
+                    })
             }
 
             else -> {
@@ -202,31 +194,6 @@ class PaymentMethodFragment : Fragment() {
         }
     }
 
-    private fun createFawryDialog(total: Float, savedUserName: String, savedPassword: String) {
-
-        if (::fawryAuthDialog.isInitialized) showFawryDialog()
-        else {
-            fawryAuthDialog =
-                FawryAuthDialogFragment(savedUserName, savedPassword) { username, password ->
-                    (requireActivity() as MainActivity).fawryPay(
-                        name = username,
-                        password = password,
-                        amount = total.toDouble(),
-                        onSuccess = { fawryReference ->
-                            payToTheApi(5, fawryReference)
-                            viewModel.saveUserData(username, password)
-                        })
-                    showFawryDialog()
-                }
-        }
-
-    }
-
-    private fun showFawryDialog() {
-        if (!fawryAuthDialog.isAdded && !fawryAuthDialog.isVisible) fawryAuthDialog.show(
-            requireActivity().supportFragmentManager, "Fawry Auth"
-        )
-    }
 
 
     private fun payToTheApi(methodID: Int, transitionNo: String? = null) {

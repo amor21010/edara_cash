@@ -5,8 +5,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 
 object Consts {
  val USER_TOKEN = stringPreferencesKey("Edara_Cash_Token")
- val FAWRY_USER_USERNAME = stringPreferencesKey("EDARA_FAWRY_USER_USERNAME")
- val FAWRY_USER_PASSWORD = stringPreferencesKey("EDARA_FAWRY_USER_PASSWORD")
+
  val IS_PAYMENT_FIRST_TIME = booleanPreferencesKey("IS_PAYMENT_FIRST_TIME")
  const val PRIVET_SERVICE_PERMISSION=("PSRequest.FPOS.Default")
  const val INSURANCE_PERMISSION=("INRequest.FPOS.Default")

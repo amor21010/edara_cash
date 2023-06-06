@@ -15,8 +15,6 @@ import net.edara.domain.use_case.InsuranceServicePaymentUseCase
 import net.edara.domain.use_case.InsuranceServicePrintUseCase
 import net.edara.domain.use_case.PrivetServicePaymentUseCase
 import net.edara.domain.use_case.PrivetServicePrintUseCase
-import net.edara.edaracash.models.Consts.FAWRY_USER_PASSWORD
-import net.edara.edaracash.models.Consts.FAWRY_USER_USERNAME
 import net.edara.edaracash.models.Consts.USER_TOKEN
 import javax.inject.Inject
 
@@ -35,7 +33,7 @@ class PaymentViewModel @Inject constructor(
         ResultState.Init
     )
     val unitInfo = _unitInfo
-    private var isFirstCall = false
+
     suspend fun getUnitInfo(
         servicesId: List<String?>,
         updating: Boolean = false,
@@ -116,32 +114,9 @@ class PaymentViewModel @Inject constructor(
 
     }
 
-    fun getStoredFawryUser(): StateFlow<FawryUser?> {
-        val flow: MutableStateFlow<FawryUser?> = MutableStateFlow(FawryUser("", ""))
-        viewModelScope.launch {
-            dataStore.data.collect {
-                flow.emit(
-                    FawryUser(
-                        it[FAWRY_USER_USERNAME], it[FAWRY_USER_PASSWORD]
-                    )
-                )
-            }
-        }
 
-        return flow
-    }
 
-    fun saveUserData(username: String, password: String) {
-        viewModelScope.launch {
-            dataStore.edit {
-                it[FAWRY_USER_USERNAME] = username
-                it[FAWRY_USER_PASSWORD] = password
 
-            }
-        }
-    }
-
-    data class FawryUser(val username: String?, val password: String?)
     sealed class PaymentState {
         object Init : PaymentState()
         object Loading : PaymentState()

@@ -25,7 +25,7 @@
                 android:layout_height="match_parent">
 
                 <com.airbnb.lottie.LottieAnimationView
-                    android:id="@+id/success"
+                    android:id="@+id/success_animation"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
                     android:layout_marginVertical="@dimen/mid_margin"
@@ -39,7 +39,7 @@
                     app:lottie_rawRes="@raw/payment_processing" />
 
                 <TextView
-                    android:id="@+id/sucess"
+                    android:id="@+id/success"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="@string/payment_succeeded"
