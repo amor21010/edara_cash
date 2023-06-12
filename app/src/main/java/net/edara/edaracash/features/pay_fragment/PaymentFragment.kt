@@ -3,10 +3,12 @@ package net.edara.edaracash.features.pay_fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -24,6 +26,7 @@ class PaymentFragment : Fragment() {
     var tax = 0.0
     var extraCharge = 0.0
     private var isInsurance = false
+    private lateinit var services: List<GetAllServiceResonse.Data.Service>
     private lateinit var binding: FragmentPaymentBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -31,7 +34,7 @@ class PaymentFragment : Fragment() {
 
         binding = FragmentPaymentBinding.inflate(inflater, container, false)
 
-        val services = PaymentFragmentArgs.fromBundle(requireArguments()).services.toList()
+        services = PaymentFragmentArgs.fromBundle(requireArguments()).services.toList()
         val unitInfo = PaymentFragmentArgs.fromBundle(requireArguments()).unitInfo
         isInsurance = PaymentFragmentArgs.fromBundle(requireArguments()).isInsurance
 
@@ -51,6 +54,16 @@ class PaymentFragment : Fragment() {
         var total = services.sumOf {
             (it.amount)?.toDouble() ?: 0.0
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    discount = 0.0
+                    tax = 0.0
+                    extraCharge = 0.0
+                    total = 0.0
+                }
+            })
         binding.tax.editText?.doAfterTextChanged { text ->
             val cost = try {
                 text.toString().toDouble()
@@ -84,18 +97,19 @@ class PaymentFragment : Fragment() {
             findNavController().popBackStack()
         }
         binding.payButton.setOnClickListener {
-            proceedToPayment(services, unitInfo)
+            proceedToPayment(services)
         }
         return binding.root
     }
 
+
     private fun proceedToPayment(
         services: List<GetAllServiceResonse.Data.Service>,
-        unitInfo: PrintResponse.Data?
     ) {
         val extrasDto = ExtrasDto(extraCharge, tax, discount)
         val invoiceBuilder =
-            InvoiceBuilder(extrasDto = extrasDto, serviceList = services, unitInfo = unitInfo!!)
+            InvoiceBuilder(extrasDto = extrasDto, serviceList = services)
+        Log.d("TAG", "proceedToPayment: $invoiceBuilder")
 
         findNavController().navigate(
             PaymentFragmentDirections.actionPaymentFragmentToInvoiceFragment(

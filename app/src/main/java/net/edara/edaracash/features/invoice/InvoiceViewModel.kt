@@ -4,10 +4,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import net.edara.domain.models.print.PrintResponse
 import net.edara.domain.use_case.InsuranceServicePrintUseCase
 import net.edara.domain.use_case.PrivetServicePrintUseCase
@@ -29,40 +27,38 @@ class InvoiceViewModel @Inject constructor(
         listOf("")
     )
     val permissions = _permissions
-    private lateinit var _token: String
 
 
-    private fun getToken() {
-        viewModelScope.launch {
-            dataStore.data.collect { preferences ->
-                _token = preferences[Consts.USER_TOKEN].toString()
-                _permissions.value = TokenUtils.getUserJWT(_token).permissions
-            }
-        }
-    }
 
-    init {
-        getToken()
-    }
+
+
 
     suspend fun getUnitInfo(servicesId: List<String?>, isInsurance: Boolean) {
         _unitInfo.value = ResultState.Loading
+
+
         try {
-            val result = if (isInsurance) insuranceServicePrintUseCase(
-                servicesId, "bearer $_token"
-            ) else
-                privetServicePrintUseCase(
-                    servicesId, "bearer $_token"
-                )
-            if (result.data != null) {
-                _unitInfo.value =
-                    ResultState.Success(result.data)
-                dataStore.edit { it[Consts.IS_PAYMENT_FIRST_TIME] = true }
-            } else result.failures?.requestIdentifiers?.forEach {
-                _unitInfo.value =
-                    ResultState.Error(it)
+            dataStore.data.collect { preferences ->
+                val token = preferences[Consts.USER_TOKEN].toString()
+                _permissions.value = TokenUtils.getUserJWT(token).permissions
+                val result = if (isInsurance) insuranceServicePrintUseCase(
+                    servicesId, "bearer $token"
+                ) else
+                    privetServicePrintUseCase(
+                        servicesId, "bearer $token"
+                    )
+                if (result.data != null) {
+                    _unitInfo.value =
+                        ResultState.Success(result.data)
+                    dataStore.edit { it[Consts.IS_PAYMENT_FIRST_TIME] = true }
+                } else result.failures?.requestIdentifiers?.forEach {
+                    _unitInfo.value =
+                        ResultState.Error(it)
+                }
             }
+
         } catch (e: Exception) {
+
             if (e.message?.uppercase().toString()
                     .contains("UNAUTHORIZED")
             ) _unitInfo.value =
@@ -70,9 +66,14 @@ class InvoiceViewModel @Inject constructor(
             else _unitInfo.value =
                 ResultState.Error(e.message.toString())
 
+
         }
 
 
+    }
+
+    fun removeInvoice() {
+        _unitInfo.value = ResultState.Init
     }
 }
 

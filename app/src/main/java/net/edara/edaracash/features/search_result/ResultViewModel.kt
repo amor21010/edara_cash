@@ -26,15 +26,15 @@ class ResultViewModel @Inject constructor(
     private val _unitInfo = MutableStateFlow<ResultState>(ResultState.Init)
     val unitInfo = _unitInfo
 
-    fun getUnitInfo(servicesId: String?, isInsurance: Boolean) {
+    fun getUnitInfo(servicesId: List<String?>, isInsurance: Boolean) {
         _unitInfo.value = ResultState.Loading
         viewModelScope.launch {
             dataStore.data.collect { preferences ->
                 val token = preferences[USER_TOKEN]
                 try {
                     val result = if (!isInsurance) privetServicePrintUseCase(
-                        listOf(servicesId), "bearer $token"
-                    ) else insuranceServicePrintUseCase(listOf(servicesId), "bearer $token")
+                       servicesId, "bearer $token"
+                    ) else insuranceServicePrintUseCase(servicesId, "bearer $token")
 
                     if (result.data != null) _unitInfo.value = ResultState.Success(result.data)
                     else result.failures?.requestIdentifiers?.forEach {
@@ -51,6 +51,7 @@ class ResultViewModel @Inject constructor(
             }
         }
     }
+
 
 
     private val _selectedServices = MutableLiveData<List<Service>>(
@@ -72,6 +73,9 @@ class ResultViewModel @Inject constructor(
 
 
     }
+
+
+
 }
 
 sealed class ResultState {

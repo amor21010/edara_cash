@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var printer: PrinterUtil
     lateinit var fawryPrinter: Printer
-    val geideaPackageName = "com.geidea.meeza.smartpos.uat"
+    private val geideaPackageName = "com.geidea.meeza.smartpos"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)

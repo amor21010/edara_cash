@@ -10,7 +10,6 @@ import net.edara.domain.models.print.PrintResponse
 data class InvoiceBuilder(
     val serviceList: List<GetAllServiceResonse.Data.Service>,
     val extrasDto: ExtrasDto,
-    val unitInfo:PrintResponse.Data
 
 ) : Parcelable
 

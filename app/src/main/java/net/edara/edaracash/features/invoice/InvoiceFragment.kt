@@ -3,19 +3,23 @@ package net.edara.edaracash.features.invoice
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import net.edara.domain.models.payment.PaymentRequest
+import net.edara.domain.models.print.PrintResponse
 import net.edara.edaracash.MainActivity
 import net.edara.edaracash.R
 import net.edara.edaracash.databinding.FragmentInvoiceBinding
@@ -30,8 +34,10 @@ class InvoiceFragment : Fragment() {
     private val viewModel: InvoiceViewModel by activityViewModels()
     private lateinit var binding: FragmentInvoiceBinding
     private var permissions: List<String?> = listOf()
-    lateinit var invoice: InvoiceBuilder
+    lateinit var invoiceBuilder: InvoiceBuilder
     private var isInsurance = false
+    private lateinit var invoice: PrintResponse.Data
+    private lateinit var serviceAdapter: ServiceAdapter
 
     @Inject
     lateinit var printerUtil: PrinterUtil
@@ -39,12 +45,21 @@ class InvoiceFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentInvoiceBinding.inflate(inflater, container, false)
-        invoice = InvoiceFragmentArgs.fromBundle(requireArguments()).invoice
+        invoiceBuilder = InvoiceFragmentArgs.fromBundle(requireArguments()).invoice
+        Log.d("TAG", "onCreateView: $invoiceBuilder")
         isInsurance = InvoiceFragmentArgs.fromBundle(requireArguments()).isInsurance
         lifecycleScope.launch {
-            viewModel.getUnitInfo(servicesId = invoice.serviceList.map { it.id }, isInsurance)
+            viewModel.getUnitInfo(
+                servicesId = invoiceBuilder.serviceList.map { it.id },
+                isInsurance
+            )
         }
-
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    viewModel.removeInvoice()
+                }
+            })
 
         viewModel.permissions.asLiveData().observe(viewLifecycleOwner) { userTokenPermissions ->
             if (userTokenPermissions != null) {
@@ -52,18 +67,46 @@ class InvoiceFragment : Fragment() {
             }
         }
 
-        setExtrasToView(invoice)
+
+        serviceAdapter = ServiceAdapter()
+        binding.services.adapter = serviceAdapter
+
         viewModel.unitInfo.asLiveData().observe(viewLifecycleOwner) { state ->
+            Log.d("TAG", "onCreateView: $state")
             when (state) {
                 is ResultState.Success -> {
-                    invoice = invoice.copy(unitInfo = state.unitInfo!!)
+                    invoice = state.unitInfo!!
                     bindUnitInfo(invoice)
                     showHideButtons()
                 }
+
                 ResultState.Unauthorized -> {
                     createUnauthorizedAlert()
                 }
 
+                is ResultState.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                    Log.d("TAG", "onCreateView: ${state.msg}")
+
+                    val dialog = AlertDialog.Builder(requireContext())
+                    dialog.setMessage(state.msg)
+                    dialog.setCancelable(true)
+                    dialog.setOnDismissListener {
+                        findNavController().navigateUp()
+                    }
+                    dialog.setOnCancelListener {
+                        findNavController().navigateUp()
+                    }
+
+
+                    dialog.setPositiveButton(
+                        "ok"
+                    ) { _, _ -> findNavController().navigateUp() }
+
+
+                }
+
+                is ResultState.Loading -> binding.progressBar.visibility = View.VISIBLE
                 else -> {
                     showHideButtons()
 
@@ -72,34 +115,8 @@ class InvoiceFragment : Fragment() {
 
         }
 
-        setServiceListToView(invoice)
 
 
-
-        binding.payButton.setOnClickListener {
-            val allowedToPayInsurance =
-                isInsurance && permissions.contains(Consts.INSURANCE_PAY_PERMISSION)
-            val allowedToPayPrivetService =
-                !isInsurance && permissions.contains(Consts.PRIVET_SERVICE_PAY_PERMISSION)
-            if (allowedToPayInsurance || allowedToPayPrivetService)
-                findNavController().navigate(
-                    InvoiceFragmentDirections.actionInvoiceFragmentToPaymentMethodFragment(
-                        /* paymentRequest = */ PaymentRequest(
-                            discount = invoice.extrasDto.discount,
-                            extraCharge = invoice.extrasDto.extraCharge,
-                            tax = invoice.extrasDto.tax,
-                            paymentMethodId = null,
-                            requestIdentifers = invoice.serviceList.map { it.id },
-                            transactionNo = null
-                        ), isInsurance
-                    )
-                ) else Toast.makeText(
-                requireContext(),
-                "You Are Not Allowed To Preform This Action",
-                Toast.LENGTH_SHORT
-            ).show()
-
-        }
 
 
 
@@ -107,22 +124,7 @@ class InvoiceFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        binding.print.setOnClickListener {
-            Log.d("TAG", "onCreateView: $permissions")
-            invoice.unitInfo.receiptNo
-            val allowedToPrintInsurance =
-                isInsurance && permissions.contains(Consts.INSURANCE_PRINT_PERMISSION)
-            val allowedToPrintPrivetService =
-                !isInsurance && permissions.contains(Consts.PRIVET_SERVICE_PRINT_PERMISSION)
-            if (allowedToPrintInsurance || allowedToPrintPrivetService)
-                printView()
-            else Toast.makeText(
-                requireContext(),
-                "You Are Not Allowed To Preform This Action",
-                Toast.LENGTH_SHORT
-            ).show()
 
-        }
         return binding.root
     }
 
@@ -150,40 +152,97 @@ class InvoiceFragment : Fragment() {
         dialog.show()
     }
 
-    private fun bindUnitInfo(invoice: InvoiceBuilder) {
-        binding.progressBar.visibility=View.GONE
-        binding.linearLayout.visibility=View.VISIBLE
-        binding.date.text = "Date :" + invoice.unitInfo.issueDate
-        binding.reciept.text = invoice.unitInfo.receiptNo
-        binding.project.text = invoice.unitInfo.projectName
-        binding.unitCode.text = invoice.unitInfo.analysisCode
-        binding.unitNo.text = invoice.unitInfo.unitNumber
-        binding.collection.text = invoice.unitInfo.collectionNo
-        binding.user.text = invoice.unitInfo.loggedInUser
+
+    private fun bindUnitInfo(invoice: PrintResponse.Data) {
+        serviceAdapter.submitList(invoiceBuilder.serviceList)
+
+        binding.progressBar.visibility = View.GONE
+        binding.linearLayout.visibility = View.VISIBLE
+        binding.date.text = "Date :" + invoice.issueDate
+        binding.reciept.text = invoice.receiptNo
+        binding.project.text = invoice.projectName
+        binding.unitCode.text = invoice.analysisCode
+        binding.unitNo.text = invoice.unitNumber
+        binding.collection.text = invoice.collectionNo
+        binding.user.text = invoice.loggedInUser
+        val image = ((if (invoice.qrCodeFileName.isNullOrEmpty()) {
+            (resources.getString(R.string.qrcode_placeholder))
+        } else invoice.qrCodeFileName))?.split(",")?.get(1)
+        try {
+            Log.d("TAG", "bindUnitInfo: image $image")
+
+            val imageByteArray: ByteArray = Base64.decode(
+                image,
+                Base64.DEFAULT
+            )
+            Log.d("TAG", "bindUnitInfo: array $imageByteArray")
+            Glide.with(requireContext()).asBitmap().load(imageByteArray).into(binding.qrCode)
+        } catch (e: Exception) {
+            Log.d("TAG", "bindUnitInfo: error ${e.message}")
+        }
+
+        setExtrasToView()
+        binding.radio.visibility = View.VISIBLE
+        binding.print.setOnClickListener {
+            Log.d("TAG", "onCreateView: $permissions")
+            invoice.receiptNo
+            val allowedToPrintInsurance =
+                isInsurance && permissions.contains(Consts.INSURANCE_PRINT_PERMISSION)
+            val allowedToPrintPrivetService =
+                !isInsurance && permissions.contains(Consts.PRIVET_SERVICE_PRINT_PERMISSION)
+            if (allowedToPrintInsurance || allowedToPrintPrivetService)
+                printView()
+            else Toast.makeText(
+                requireContext(),
+                "You Are Not Allowed To Preform This Action",
+                Toast.LENGTH_SHORT
+            ).show()
+
+        }
+
+
+        binding.payButton.setOnClickListener {
+            val allowedToPayInsurance =
+                isInsurance && permissions.contains(Consts.INSURANCE_PAY_PERMISSION)
+            val allowedToPayPrivetService =
+                !isInsurance && permissions.contains(Consts.PRIVET_SERVICE_PAY_PERMISSION)
+            if (allowedToPayInsurance || allowedToPayPrivetService)
+                findNavController().navigate(
+                    InvoiceFragmentDirections.actionInvoiceFragmentToPaymentMethodFragment(
+                        /* paymentRequest = */ PaymentRequest(
+                            discount = invoiceBuilder.extrasDto.discount,
+                            extraCharge = invoiceBuilder.extrasDto.extraCharge,
+                            tax = invoiceBuilder.extrasDto.tax,
+                            paymentMethodId = null,
+                            requestIdentifers = invoiceBuilder.serviceList.map { it.id },
+                            transactionNo = null
+                        ), isInsurance
+                    )
+                ) else Toast.makeText(
+                requireContext(),
+                "You Are Not Allowed To Preform This Action",
+                Toast.LENGTH_SHORT
+            ).show()
+
+        }
+
     }
 
     private fun setExtrasToView(
-        invoiceBuilder: InvoiceBuilder
+
     ) {
-        val total = (invoiceBuilder.unitInfo.grandTotal?.toDouble()
+        val total = (invoice.grandTotal?.toDouble()
             ?: 0.0) + invoiceBuilder.extrasDto.extraCharge + invoiceBuilder.extrasDto.tax - invoiceBuilder.extrasDto.discount
         binding.total.text = total.toString()
         binding.extraCharge.text = invoiceBuilder.extrasDto.extraCharge.toString()
         binding.discount.text = invoiceBuilder.extrasDto.discount.toString()
     }
 
-    private fun setServiceListToView(invoice: InvoiceBuilder) {
-        val adapter = ServiceAdapter()
-        adapter.submitList(invoice.serviceList)
-        binding.services.adapter = adapter
-        bindUnitInfo(invoice)
-    }
-
-    fun showHideButtons() {
+    private fun showHideButtons() {
         try {
 
             //The receipt has been paid before
-            val receiptNo = (invoice.unitInfo.receiptNo.toString().toDouble())
+            val receiptNo = (invoice.receiptNo.toString().toDouble())
             if (receiptNo != 0.0) {
                 binding.payButton.visibility = View.GONE
                 binding.cancelButton.visibility = View.VISIBLE
@@ -192,6 +251,7 @@ class InvoiceFragment : Fragment() {
             //The receipt has not been paid before
             binding.payButton.visibility = View.VISIBLE
             binding.cancelButton.visibility = View.GONE
+
         }
     }
 

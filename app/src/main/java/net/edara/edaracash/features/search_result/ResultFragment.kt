@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -22,7 +23,7 @@ class ResultFragment : Fragment() {
     private lateinit var adapter: ResultAdapter
     private var unitInfo: PrintResponse.Data? = null
     private val viewModel: ResultViewModel by viewModels()
-    private var selectedItems = listOf<Service>()
+    private var selectedItems = emptyList<Service>()
     private var isInsurance = false
 
     override fun onCreateView(
@@ -33,7 +34,7 @@ class ResultFragment : Fragment() {
          isInsurance = ResultFragmentArgs.fromBundle(requireArguments()).isInsurance
 
 
-        viewModel.getUnitInfo(servicesId = services[0].id, isInsurance)
+        viewModel.getUnitInfo(servicesId = services.map { it.id }, isInsurance)
         viewModel.unitInfo.asLiveData().observe(viewLifecycleOwner) { resultState ->
             when (resultState) {
                 is ResultState.Error -> showError()
@@ -61,11 +62,14 @@ class ResultFragment : Fragment() {
         }
 
         binding.payButton.setOnClickListener {
+
             findNavController().navigate(
                 ResultFragmentDirections.actionResultFragmentToPaymentFragment(
                     selectedItems.toTypedArray(), unitInfo, isInsurance
                 )
             )
+
+
         }
         return binding.root
     }
@@ -91,8 +95,8 @@ class ResultFragment : Fragment() {
 
     private fun getSelected(services: Array<Service>) {
         viewModel.selectedServices.observe(viewLifecycleOwner) { selectedOrders ->
-            selectedItems = selectedOrders
-            adapter.selectedItems = selectedOrders.toMutableList()
+            selectedItems = selectedOrders.toMutableList()
+            adapter.selectedItems =selectedItems.toMutableList()
             if (selectedOrders.isNotEmpty()) {
                 binding.payButton.visibility = View.VISIBLE
                 binding.selectAllCheckBox.isChecked = selectedOrders.size == services.size
@@ -109,11 +113,14 @@ class ResultFragment : Fragment() {
 
         } else {
             if (selectedItems.isNotEmpty()) viewModel.addServiceToSelection(services = item)
-            else findNavController().navigate(
-                ResultFragmentDirections.actionResultFragmentToPaymentFragment(
-                    arrayOf(item), unitInfo,isInsurance
+            else {
+                findNavController().navigate(
+                    ResultFragmentDirections.actionResultFragmentToPaymentFragment(
+                        arrayOf(item), unitInfo, isInsurance
+                    )
                 )
-            )
+
+            }
         }
 
     }, onItemSelect = { item ->
@@ -128,10 +135,15 @@ class ResultFragment : Fragment() {
 
         dialog.setMessage("Please Login Again")
         dialog.setPositiveButton("Login") { _, _ ->
+
             findNavController().navigate(R.id.loginFragment)
+
+
         }
         dialog.setOnDismissListener {
             findNavController().navigate(R.id.loginFragment)
+
+
         }
         dialog.show()
     }
