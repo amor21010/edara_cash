@@ -146,6 +146,7 @@ class MainActivity : AppCompatActivity() {
             }, onDisconnected = {
                 Log.d("TAG", "fawryPay: disconnected")
 
+
             }, onFailure = { _, throwable ->
                 Log.d("TAG", "fawryPay: ${throwable?.message}")
                 Toast.makeText(this, "Failed Due To: ${throwable?.message}", Toast.LENGTH_SHORT)
