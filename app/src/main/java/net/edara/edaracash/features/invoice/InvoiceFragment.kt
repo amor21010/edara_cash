@@ -165,14 +165,10 @@ class InvoiceFragment : Fragment() {
         binding.unitNo.text = invoice.unitNumber
         binding.collection.text = invoice.collectionNo
         binding.user.text = invoice.loggedInUser
-        val image = ((if (invoice.qrCodeFileName.isNullOrEmpty()) {
-            (resources.getString(R.string.qrcode_placeholder))
-        } else invoice.qrCodeFileName))?.split(",")?.get(1)
-        try {
-            Log.d("TAG", "bindUnitInfo: image $image")
 
+        try {
             val imageByteArray: ByteArray = Base64.decode(
-                image,
+                invoice.qrCodeFileName,
                 Base64.DEFAULT
             )
             Log.d("TAG", "bindUnitInfo: array $imageByteArray")

@@ -17,8 +17,8 @@ android {
         applicationId "net.edara.edaracash"
         minSdk 25
         targetSdk 33
-        versionCode 39
-        versionName "1.0.1"
+        versionCode 41
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -69,6 +69,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.14.2'
     implementation project(path: ':sunmiprinterutill')
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
+
     implementation files("../connect-sdk-v1.0.1.8.aar")
     implementation files("../nexgo-smartpos-sdk-v2.2.1_20190527.aar")
     testImplementation 'junit:junit:4.13.2'
@@ -87,6 +88,7 @@ dependencies {
     implementation "com.airbnb.android:lottie:$lottieVersion"
     implementation project(path: ":domain")
     implementation project(path: ":data")
+    implementation project(path: ":paxPrinter")
 
     implementation 'com.google.dagger:hilt-android:2.45'
     kapt 'com.google.dagger:hilt-compiler:2.45'

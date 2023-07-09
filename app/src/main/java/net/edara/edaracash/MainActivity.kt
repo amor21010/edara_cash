@@ -32,6 +32,7 @@ import net.edara.edaracash.databinding.ActivityMainBinding
 import net.edara.edaracash.paymentMethods.fawry.FawryPaymentResult
 import net.edara.edaracash.paymentMethods.geidea.GeideaPaymentResult
 import net.edara.edaracash.paymentMethods.geidea.isGeideaInstalled
+import net.edara.paxprinter.PaxPrinter
 import net.edara.sunmiprinterutill.PrinterUtil
 import javax.inject.Inject
 
@@ -145,7 +146,7 @@ class MainActivity : AppCompatActivity() {
             }, onDisconnected = {
                 Log.d("TAG", "fawryPay: disconnected")
 
-            }, onFailure = { errorCode, throwable ->
+            }, onFailure = { _, throwable ->
                 Log.d("TAG", "fawryPay: ${throwable?.message}")
                 Toast.makeText(this, "Failed Due To: ${throwable?.message}", Toast.LENGTH_SHORT)
                     .show()
@@ -293,8 +294,15 @@ class MainActivity : AppCompatActivity() {
         try {
             if (isGeideaInstalled(this, geideaPackageName))
                 printer.sendViewToPrinter(view)
-            else
-                fawryPrint(view)
+            else {
+                try {
+                    fawryPrint(view)
+                } catch (e: Exception) {
+                    val bitmap = printer.scaleImage(printer.convertViewToBitmap(view))
+                    PaxPrinter.instance?.printBitmap(bitmap)
+                    PaxPrinter.instance?.start()
+                }
+            }
             view.requestLayout()
             view.invalidate()
         } catch (e: Exception) {

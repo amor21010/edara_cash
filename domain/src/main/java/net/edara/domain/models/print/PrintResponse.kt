@@ -40,7 +40,7 @@ data class PrintResponse(
         val paymentMethod: String?,
         @SerializedName("projectName")
         val projectName: String?,
-        @SerializedName("qrCodeFileName")
+        @SerializedName("qrCode")
         val qrCodeFileName: String?,
         @SerializedName("receiptNo")
         val receiptNo: String?,
