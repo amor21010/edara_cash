@@ -25,7 +25,7 @@ import net.edara.edaracash.R
 import net.edara.edaracash.databinding.FragmentInvoiceBinding
 import net.edara.edaracash.models.Consts
 import net.edara.edaracash.models.InvoiceBuilder
-import net.edara.sunmiprinterutill.PrinterUtil
+import net.edara.sunmiprinterutill.GeideaPrinterUtil
 import javax.inject.Inject
 
 
@@ -39,8 +39,7 @@ class InvoiceFragment : Fragment() {
     private lateinit var invoice: PrintResponse.Data
     private lateinit var serviceAdapter: ServiceAdapter
 
-    @Inject
-    lateinit var printerUtil: PrinterUtil
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {

@@ -47,7 +47,8 @@
                     android:textColor="?attr/colorOnPrimaryContainer"
                     android:textSize="@dimen/receipt_normal"
                     android:textStyle="bold"
-
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     app:drawableTint="?attr/colorOnPrimaryContainer"
                     app:drawableTopCompat="@drawable/repairing" />
 

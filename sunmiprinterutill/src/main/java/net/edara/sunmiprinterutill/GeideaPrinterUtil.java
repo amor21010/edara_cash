@@ -11,11 +11,11 @@ import android.view.View;
 
 import net.edara.sunmiprinterutill.model.AidlUtil;
 
-public class PrinterUtil {
+public class GeideaPrinterUtil {
 
     public final AidlUtil aidlUtil;
 
-    public PrinterUtil(Context context) {
+    public GeideaPrinterUtil(Context context) {
         aidlUtil = AidlUtil.Companion.getInstance();
         aidlUtil.connectPrinterService(context);
     }

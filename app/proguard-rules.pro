@@ -67,3 +67,5 @@
 -keepclassmembers public class com.fawry.pos.retailer.connect.model.messages.** {*;}
 
 -keep public class android.serialport.** {public private protected *;}
+-keep class net.edara.** {*;}
+-keep class net.edara.edaracash.** {*;}

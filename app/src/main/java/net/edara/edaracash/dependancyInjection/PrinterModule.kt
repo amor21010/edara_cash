@@ -1,7 +1,7 @@
 package net.edara.edaracash.dependancyInjection
 
 import android.content.Context
-import net.edara.sunmiprinterutill.PrinterUtil
+import net.edara.sunmiprinterutill.GeideaPrinterUtil
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,8 +14,8 @@ import javax.inject.Singleton
 object PrinterModule {
     @Singleton
     @Provides
-    fun providePreferencesDataStore(@ApplicationContext appContext: Context): PrinterUtil {
+    fun providePreferencesDataStore(@ApplicationContext appContext: Context): GeideaPrinterUtil {
 
-        return PrinterUtil(appContext)
+        return GeideaPrinterUtil(appContext)
     }
 }

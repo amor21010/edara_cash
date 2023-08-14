@@ -29,11 +29,11 @@ import com.nexgo.oaf.apiv3.device.printer.AlignEnum
 import com.nexgo.oaf.apiv3.device.printer.Printer
 import dagger.hilt.android.AndroidEntryPoint
 import net.edara.edaracash.databinding.ActivityMainBinding
+import net.edara.edaracash.paxPrint.print.PrintReceipt
 import net.edara.edaracash.paymentMethods.fawry.FawryPaymentResult
 import net.edara.edaracash.paymentMethods.geidea.GeideaPaymentResult
 import net.edara.edaracash.paymentMethods.geidea.isGeideaInstalled
-import net.edara.paxprinter.PaxPrinter
-import net.edara.sunmiprinterutill.PrinterUtil
+import net.edara.sunmiprinterutill.GeideaPrinterUtil
 import javax.inject.Inject
 
 
@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var onSuccess: (transitionNo: String) -> Unit
 
     @Inject
-    lateinit var printer: PrinterUtil
+    lateinit var geideaPrinterUtil: GeideaPrinterUtil
     lateinit var fawryPrinter: Printer
     private val geideaPackageName = "com.geidea.meeza.smartpos"
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,14 +57,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         val controller =
             (supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment).navController
-
         setupWithNavController(binding.bottomNavigation, controller)
         appBarConfiguration = AppBarConfiguration(
             topLevelDestinationIds = setOf(R.id.chooseOrderTypeFragment),
             fallbackOnNavigateUpListener = ::onSupportNavigateUp
         )
         binding.toolBar.setupWithNavController(controller, appBarConfiguration)
-        if (!printer.aidlUtil.isConnect) printer.aidlUtil.connectPrinterService(this)
+        if (!geideaPrinterUtil.aidlUtil.isConnect) geideaPrinterUtil.aidlUtil.connectPrinterService(
+            this
+        )
         handleNavChangesToTheView(controller)
         onBackPressed(controller)
     }
@@ -145,6 +146,7 @@ class MainActivity : AppCompatActivity() {
 
             }, onDisconnected = {
                 Log.d("TAG", "fawryPay: disconnected")
+
 
             }, onFailure = { _, throwable ->
                 Log.d("TAG", "fawryPay: ${throwable?.message}")
@@ -273,13 +275,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fawryPrint(view: View) {
-        val deviceEngine = APIProxy.getDeviceEngine(this)
-        fawryPrinter = deviceEngine.printer
-        fawryPrinter.setTypeface(Typeface.SANS_SERIF)
-        val bitmap = printer.scaleImage(printer.convertViewToBitmap(view))
-        fawryPrinter.appendImage(bitmap, AlignEnum.CENTER)
-        fawryPrinter.startPrint(true) {
-            Log.d("fawryPrint", "fawryPrint: $it")
+        try {
+            val deviceEngine = APIProxy.getDeviceEngine(this)
+            fawryPrinter = deviceEngine.printer
+            fawryPrinter.setTypeface(Typeface.SANS_SERIF)
+            val bitmap = geideaPrinterUtil.scaleImage(geideaPrinterUtil.convertViewToBitmap(view))
+            fawryPrinter.appendImage(bitmap, AlignEnum.CENTER)
+            fawryPrinter.startPrint(true) {
+                Log.d("fawryPrint", "fawryPrint: $it")
+            }
+        } catch (e: LinkageError) {
+
+            Log.d("TAG", "fawryPrint: ${e.message}")
+            paxPrint(view)
+
+        } catch (e: Exception) {
+            Log.d("fawryPrint", "fawryPrint: ${e.message}")
+            paxPrint(view)
+
         }
     }
 
@@ -291,21 +304,29 @@ class MainActivity : AppCompatActivity() {
     )
 
     fun printReceipt(view: View) {
-        try {
-            if (isGeideaInstalled(this, geideaPackageName))
-                printer.sendViewToPrinter(view)
-            else {
-                try {
-                    fawryPrint(view)
-                } catch (e: Exception) {
-                    val bitmap = printer.scaleImage(printer.convertViewToBitmap(view))
-                    PaxPrinter.instance?.printBitmap(bitmap)
-                    PaxPrinter.instance?.start()
-                }
+
+        if (isGeideaInstalled(this, geideaPackageName))
+            geideaPrinterUtil.sendViewToPrinter(view)
+        else {
+            try {
+                fawryPrint(view)
+                view.requestLayout()
+                view.invalidate()
+
+            } catch (e: Exception) {
+                Toast.makeText(this, "Printer Not Found", Toast.LENGTH_SHORT).show()
+                Log.d("TAG", "printReceipt: ${e.message}")
+
             }
-            view.requestLayout()
-            view.invalidate()
-        } catch (e: Exception) {
+        }
+
+    }
+
+    private fun paxPrint(view: View) {
+        try {
+            val bitmap = geideaPrinterUtil.scaleImage(geideaPrinterUtil.convertViewToBitmap(view))
+            PrintReceipt(this).printReceipt(bitmap, application as EdaraCashApplication)
+        } catch (e: java.lang.Error) {
             Toast.makeText(this, "Printer Not Found", Toast.LENGTH_SHORT).show()
         }
     }
