@@ -2,7 +2,9 @@ package net.edara.edaracash.features.methodes_fragment
 
 import android.app.AlertDialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +23,7 @@ import net.edara.edaracash.MainActivity
 import net.edara.edaracash.R
 import net.edara.edaracash.databinding.FragmentMethodBinding
 import net.edara.edaracash.features.dialogs.PaymentProssessDialogFragment
+import net.edara.edaracash.navigateSafely
 
 @AndroidEntryPoint
 class PaymentMethodFragment : Fragment() {
@@ -150,11 +153,11 @@ class PaymentMethodFragment : Fragment() {
         dialog.setMessage("Please Login Again")
         dialog.setCancelable(false)
         dialog.setPositiveButton("Login") { _, _ ->
-            findNavController().navigate(R.id.loginFragment)
+           navigateSafely(R.id.loginFragment)
         }
 
         dialog.setOnDismissListener {
-            findNavController().navigate(R.id.loginFragment)
+           navigateSafely(R.id.loginFragment)
         }
 
         dialog.show()
@@ -181,11 +184,14 @@ class PaymentMethodFragment : Fragment() {
                 }
             }
             5 -> {
-                (requireActivity() as MainActivity).fawryPay(
-                    amount = total.toDouble(),
-                    onSuccess = { fawryReference ->
-                        payToTheApi(5, fawryReference)
+
+                payWithFawry(
+                    total,
+                    ({ fawryTransactionNumber ->
+                        payToTheApi(methodID, fawryTransactionNumber)
                     })
+                )
+
             }
 
             else -> {
@@ -194,6 +200,28 @@ class PaymentMethodFragment : Fragment() {
         }
     }
 
+    private fun payWithFawry(
+        total: Float, onSuccess: (fawryRefrance: String) -> Unit
+    ) {
+        val isFawry by lazy {
+            val buildList = listOf(
+                Build.MANUFACTURER.uppercase(),
+                Build.BRAND.uppercase(),
+                Build.DEVICE.uppercase(),
+                Build.MODEL.uppercase(),
+                Build.PRODUCT.uppercase()
+            )
+            Log.d("TAG", "build: $buildList")
+            buildList.any { it.contains("FAWRY") }
+        }
+        if (isFawry)
+            (requireActivity() as MainActivity).fawryPay(
+                amount = total.toDouble(),
+                onSuccess = { fawryReference ->
+                    onSuccess(fawryReference)
+                })
+        else Toast.makeText(requireContext(), "this is not fawry pos", Toast.LENGTH_SHORT).show()
+    }
 
 
     private fun payToTheApi(methodID: Int, transitionNo: String? = null) {

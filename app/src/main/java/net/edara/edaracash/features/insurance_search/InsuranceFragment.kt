@@ -10,10 +10,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import net.edara.domain.models.getAllService.GetAllServiceResonse
 import net.edara.edaracash.R
 import net.edara.edaracash.databinding.FragmentInsuranceBinding
 import net.edara.edaracash.features.service_search.SearchState
+import net.edara.edaracash.navigateSafely
 
 @AndroidEntryPoint
 class InsuranceFragment : Fragment() {
@@ -31,13 +33,12 @@ class InsuranceFragment : Fragment() {
 
         binding.searchButton.setOnClickListener {
             getAllServices()
-
         }
-        lifecycleScope.launchWhenResumed {
+        lifecycleScope.launch {
             viewModel.service.collect { response ->
                 when (response) {
                     is SearchState.Failed -> {
-                        binding.searchButton.isEnabled=true
+                        binding.searchButton.isEnabled = true
 
                         val previousText = binding.failuers.text.toString()
                         binding.searchButton.text = "Search"
@@ -67,7 +68,7 @@ class InsuranceFragment : Fragment() {
                         binding.searchButton.text = "Search"
                         if (!isNavigationDone) {
                             servicesList = response.service.toTypedArray()
-                            findNavController().navigate(
+                           navigateSafely(
                                 InsuranceFragmentDirections.actionInsuranceFragmentToResultFragment(
                                     servicesList, true
                                 )
@@ -101,7 +102,7 @@ class InsuranceFragment : Fragment() {
 
         dialog.setMessage("Please Login Again")
         dialog.setPositiveButton("Login") { _, _ ->
-            findNavController().navigate(R.id.loginFragment)
+           navigateSafely(R.id.loginFragment)
         }
 
         dialog.show()

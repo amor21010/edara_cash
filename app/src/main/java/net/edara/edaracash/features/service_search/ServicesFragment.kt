@@ -7,12 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import net.edara.domain.models.getAllService.GetAllServiceResonse
 import net.edara.edaracash.R
 import net.edara.edaracash.databinding.FragmentServicesBinding
+import net.edara.edaracash.navigateSafely
 
 
 @AndroidEntryPoint
@@ -33,8 +36,8 @@ class ServicesFragment : Fragment() {
             getAllServices()
 
         }
-        lifecycleScope.launchWhenResumed {
-            viewModel.service.collect { response ->
+
+            viewModel.service.asLiveData().observe(viewLifecycleOwner) { response ->
                 when (response) {
                     is SearchState.Failed -> {
                         binding.searchButton.isEnabled=true
@@ -67,7 +70,7 @@ class ServicesFragment : Fragment() {
                         binding.searchButton.text = "Search"
                         if (!isNavigationDone) {
                             servicesList = response.service.toTypedArray()
-                            findNavController().navigate(
+                           navigateSafely(
                                 ServicesFragmentDirections.actionServicesFragmentToResultFragment(
                                     servicesList, false
                                 )
@@ -90,7 +93,7 @@ class ServicesFragment : Fragment() {
                 }
 
             }
-        }
+
         return binding.root
     }
 
@@ -101,7 +104,7 @@ class ServicesFragment : Fragment() {
 
         dialog.setMessage("Please Login Again")
         dialog.setPositiveButton("Login") { _, _ ->
-            findNavController().navigate(R.id.loginFragment)
+           navigateSafely(R.id.loginFragment)
         }
 
         dialog.show()

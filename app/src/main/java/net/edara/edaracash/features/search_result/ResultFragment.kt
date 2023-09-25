@@ -15,6 +15,7 @@ import net.edara.domain.models.getAllService.GetAllServiceResonse.Data.Service
 import net.edara.domain.models.print.PrintResponse
 import net.edara.edaracash.R
 import net.edara.edaracash.databinding.FragmentResultBinding
+import net.edara.edaracash.navigateSafely
 
 @AndroidEntryPoint
 class ResultFragment : Fragment() {
@@ -63,7 +64,7 @@ class ResultFragment : Fragment() {
 
         binding.payButton.setOnClickListener {
 
-            findNavController().navigate(
+           navigateSafely(
                 ResultFragmentDirections.actionResultFragmentToPaymentFragment(
                     selectedItems.toTypedArray(), unitInfo, isInsurance
                 )
@@ -114,7 +115,7 @@ class ResultFragment : Fragment() {
         } else {
             if (selectedItems.isNotEmpty()) viewModel.addServiceToSelection(services = item)
             else {
-                findNavController().navigate(
+               navigateSafely(
                     ResultFragmentDirections.actionResultFragmentToPaymentFragment(
                         arrayOf(item), unitInfo, isInsurance
                     )
@@ -136,12 +137,12 @@ class ResultFragment : Fragment() {
         dialog.setMessage("Please Login Again")
         dialog.setPositiveButton("Login") { _, _ ->
 
-            findNavController().navigate(R.id.loginFragment)
+           navigateSafely(R.id.loginFragment)
 
 
         }
         dialog.setOnDismissListener {
-            findNavController().navigate(R.id.loginFragment)
+           navigateSafely(R.id.loginFragment)
 
 
         }

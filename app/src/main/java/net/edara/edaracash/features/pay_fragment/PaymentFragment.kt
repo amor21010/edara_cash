@@ -18,6 +18,7 @@ import net.edara.edaracash.R
 import net.edara.edaracash.databinding.FragmentPaymentBinding
 import net.edara.edaracash.models.ExtrasDto
 import net.edara.edaracash.models.InvoiceBuilder
+import net.edara.edaracash.navigateSafely
 
 class PaymentFragment : Fragment() {
 
@@ -111,7 +112,7 @@ class PaymentFragment : Fragment() {
             InvoiceBuilder(extrasDto = extrasDto, serviceList = services)
         Log.d("TAG", "proceedToPayment: $invoiceBuilder")
 
-        findNavController().navigate(
+       navigateSafely(
             PaymentFragmentDirections.actionPaymentFragmentToInvoiceFragment(
                 invoiceBuilder, isInsurance
             )

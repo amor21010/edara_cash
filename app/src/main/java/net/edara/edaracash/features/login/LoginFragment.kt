@@ -17,6 +17,7 @@ import net.edara.edaracash.databinding.FragmentLoginBinding
 
 import net.edara.edaracash.features.dialogs.LoadingDialogFragment
 import net.edara.edaracash.models.UserState
+import net.edara.edaracash.navigateSafely
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -34,7 +35,7 @@ class LoginFragment : Fragment() {
             showLoading()
         }
 
-        lifecycleScope.launchWhenResumed {
+        lifecycleScope.launch {
 
             viewModel.loginState.asLiveData().observe(viewLifecycleOwner) { state ->
                 when (state) {
@@ -44,7 +45,7 @@ class LoginFragment : Fragment() {
                     }
                     is UserState.Success -> {
                         dialog.dismiss()
-                        findNavController().navigate(
+                       navigateSafely(
                             LoginFragmentDirections.actionLoginFragmentToChooseOrderTypeFragment(
                                 state.user,state.token
                             )

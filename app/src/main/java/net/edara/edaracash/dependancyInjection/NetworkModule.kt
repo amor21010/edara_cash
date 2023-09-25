@@ -23,6 +23,13 @@ object NetworkModule {
         ): OkHttpClient =
         OkHttpClient.Builder()
             .addNetworkInterceptor(interceptor)
+            .addInterceptor {
+                val requestBuilder =
+                    it.request().newBuilder().addHeader("Content-Type", "application/json")
+                        .addHeader("Accept", "text/plain")
+                val response = it.proceed(requestBuilder.build())
+                response
+            }
             .build()
 
 

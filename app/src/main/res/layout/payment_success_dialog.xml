@@ -36,7 +36,7 @@
                     app:layout_constraintVertical_bias="0.13"
                     app:lottie_autoPlay="true"
                     app:lottie_loop="true"
-                    app:lottie_rawRes="@raw/payment_processing" />
+                    app:lottie_rawRes="@raw/animation" />
 
                 <TextView
                     android:id="@+id/success"

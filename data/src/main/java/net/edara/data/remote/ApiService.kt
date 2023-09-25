@@ -53,7 +53,7 @@ interface ApiService {
         @Header("authorization") auth: String
     ): GetAllServiceResonse
 
-    @POST("PrivateServiceRequest/Print")
+    @POST("InsuranceRequest/Print")
     suspend fun insuranceServicPrintServices(
         @Body requestDto: PrintRequest,
         @Header("authorization") auth: String

@@ -13,6 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.edara.edaracash.R
 import net.edara.edaracash.models.UserState
+import net.edara.edaracash.navigateSafely
 
 
 @AndroidEntryPoint
@@ -45,7 +46,7 @@ class LandingFragment : Fragment() {
                 is UserState.Success -> {
                     if (!isFirstTime) {
                         isFirstTime = true
-                        findNavController().navigate(
+                       navigateSafely(
                             LandingFragmentDirections.actionLandingFragmentToChooseOrderTypeFragment(
                                 userState.user, userState.token
                             )
@@ -57,7 +58,7 @@ class LandingFragment : Fragment() {
                     if (!isFirstTime) {
 
                         isFirstTime = true
-                        findNavController().navigate(LandingFragmentDirections.actionLandingFragmentToLoginFragment())
+                       navigateSafely(LandingFragmentDirections.actionLandingFragmentToLoginFragment())
                     }
                 }
             }

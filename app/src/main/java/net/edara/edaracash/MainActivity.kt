@@ -10,6 +10,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -29,6 +32,8 @@ import com.nexgo.oaf.apiv3.device.printer.AlignEnum
 import com.nexgo.oaf.apiv3.device.printer.Printer
 import dagger.hilt.android.AndroidEntryPoint
 import net.edara.edaracash.databinding.ActivityMainBinding
+import net.edara.edaracash.models.Consts.FAWRY_Password
+import net.edara.edaracash.models.Consts.FAWRY_USERNAME
 import net.edara.edaracash.paxPrint.print.PrintReceipt
 import net.edara.edaracash.paymentMethods.fawry.FawryPaymentResult
 import net.edara.edaracash.paymentMethods.geidea.GeideaPaymentResult
@@ -46,6 +51,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var onSuccess: (transitionNo: String) -> Unit
+    private lateinit var navController: NavController
+
+    @Inject
+    lateinit var dataStore: DataStore<Preferences>
 
     @Inject
     lateinit var geideaPrinterUtil: GeideaPrinterUtil
@@ -55,19 +64,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val controller =
+        navController =
             (supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment).navController
-        setupWithNavController(binding.bottomNavigation, controller)
+        setupWithNavController(binding.bottomNavigation, navController)
         appBarConfiguration = AppBarConfiguration(
             topLevelDestinationIds = setOf(R.id.chooseOrderTypeFragment),
             fallbackOnNavigateUpListener = ::onSupportNavigateUp
         )
-        binding.toolBar.setupWithNavController(controller, appBarConfiguration)
+        binding.toolBar.setupWithNavController(navController, appBarConfiguration)
         if (!geideaPrinterUtil.aidlUtil.isConnect) geideaPrinterUtil.aidlUtil.connectPrinterService(
             this
         )
-        handleNavChangesToTheView(controller)
-        onBackPressed(controller)
+        handleNavChangesToTheView(navController)
+        onBackPressed(navController)
     }
 
     @Deprecated("Deprecated in Java")
@@ -136,43 +145,69 @@ class MainActivity : AppCompatActivity() {
     fun fawryPay(
        amount: Double, onSuccess: (transitionNo: String) -> Unit
     ) {
-        val fawryConnect: FawryConnect = FawryConnect.setup<IPCConnectivity.Builder>(
-            ConnectionType.IPC, UserData(
-                username = "302302", password = "135792", userType = UserType.MCC
-            )
-        ).setContext(applicationContext)
-            .setConnectionCallBack(FawryConnect.OnConnectionCallBack(onConnected = {
-                Log.d("TAG", "fawryPay: connected")
 
-            }, onDisconnected = {
-                Log.d("TAG", "fawryPay: disconnected")
+        dataStore.data.asLiveData().observe(this@MainActivity) { data ->
+            val username = data[FAWRY_USERNAME]
+            val password = data[FAWRY_Password]
+            if (username.isNullOrEmpty()
+                || password.isNullOrEmpty()
+            ) {
+                navController.navigate(R.id.fawryAuthFragment)
+                return@observe
+            }
+
+            val fawryConnect: FawryConnect = FawryConnect.setup<IPCConnectivity.Builder>(
+                ConnectionType.IPC, UserData(
+                    username = username,
+                    password = password,
+                    userType = UserType.MCC
+                )
+            ).setContext(applicationContext)
+                .setConnectionCallBack(FawryConnect.OnConnectionCallBack(onConnected = {
+                    Log.d("TAG", "fawryPay: connected")
+
+                }, onDisconnected = {
+                    Log.d("TAG", "fawryPay: disconnected")
 
 
-            }, onFailure = { _, throwable ->
-                Log.d("TAG", "fawryPay: ${throwable?.message}")
-                Toast.makeText(this, "Failed Due To: ${throwable?.message}", Toast.LENGTH_SHORT)
-                    .show()
-            })).connect()!!
+                }, onFailure = { _, throwable ->
+                    Log.d("TAG", "fawryPay: ${throwable?.message}")
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Failed Due To: ${throwable?.message}",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                })).connect()!!
 
-        fawryConnect.requestSale<CardSale.Builder>(PaymentOptionType.CARD)
-            .setAmount(amount)
-            .setCurrency("EGP")
-            .setExtras(null)
-            .setPrintReceipt(true)
-            .setDisplayInvoice(false)
-            .setPromoCode(null)
-            .setOrderID(null)
-            .send(999,
-                FawryConnect.OnTransactionCallBack(
-                    onTransactionRequestSuccess = { resultJson ->
-                        Log.d("TAG", "fawryPay: $resultJson")
-                        val result = FawryPaymentResult.buildFromJson(resultJson)
-                        result.body?.fawryReference?.let { reference -> onSuccess(reference) }
+            fawryConnect.requestSale<CardSale.Builder>(PaymentOptionType.CARD)
+                .setAmount(amount)
+                .setCurrency("EGP")
+                .setExtras(null)
+                .setPrintReceipt(true)
+                .setDisplayInvoice(false)
+                .setPromoCode(null)
+                .setOrderID(null)
+                .send(999,
+                    FawryConnect.OnTransactionCallBack(
+                        onTransactionRequestSuccess = { resultJson ->
+                            Log.d("TAG", "fawryPay: $resultJson")
+                            val result = FawryPaymentResult.buildFromJson(resultJson)
+                            result.body?.fawryReference?.let { reference ->
+                                onSuccess(
+                                    reference
+                                )
+                            }
 
-                    }, onTransactionRequestFailure = { errorCode, cause ->
-                        Log.d("TAG", "fawryPay:error code:$errorCode cause: ${cause?.message}")
-                    })
-            )
+                        }, onTransactionRequestFailure = { errorCode, cause ->
+                            Log.d(
+                                "TAG",
+                                "fawryPay:error code:$errorCode cause: ${cause?.message}"
+                            )
+                        })
+                )
+        }
+
     }
 
     private fun handleNavChangesToTheView(controller: NavController) {

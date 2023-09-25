@@ -98,6 +98,9 @@
         <argument
             android:name="token"
             app:argType="string" />
+        <action
+            android:id="@+id/action_chooseOrderTypeFragment_to_fawryAuthFragment"
+            app:destination="@id/fawryAuthFragment" />
     </fragment>
     <fragment
         android:id="@+id/invoiceFragment"
@@ -131,4 +134,9 @@
             android:name="isInsurance"
             app:argType="boolean" />
     </fragment>
+    <dialog
+        android:id="@+id/fawryAuthFragment"
+        android:name="net.edara.edaracash.features.FawryAuthFragment"
+        android:label="fragment_fawry_auth"
+        tools:layout="@layout/fragment_fawry_auth" />
 </navigation>

@@ -15,6 +15,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI.navigateUp
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -25,6 +26,7 @@ import net.edara.edaracash.R
 import net.edara.edaracash.databinding.FragmentInvoiceBinding
 import net.edara.edaracash.models.Consts
 import net.edara.edaracash.models.InvoiceBuilder
+import net.edara.edaracash.navigateSafely
 import net.edara.sunmiprinterutill.GeideaPrinterUtil
 import javax.inject.Inject
 
@@ -91,7 +93,7 @@ class InvoiceFragment : Fragment() {
                     dialog.setMessage(state.msg)
                     dialog.setCancelable(true)
                     dialog.setOnDismissListener {
-                        findNavController().navigateUp()
+                       findNavController().navigateUp()
                     }
                     dialog.setOnCancelListener {
                         findNavController().navigateUp()
@@ -143,10 +145,10 @@ class InvoiceFragment : Fragment() {
 
         dialog.setMessage("Please Login Again")
         dialog.setPositiveButton("Login") { _, _ ->
-            findNavController().navigate(R.id.loginFragment)
+           navigateSafely(R.id.loginFragment)
         }
         dialog.setOnDismissListener {
-            findNavController().navigate(R.id.loginFragment)
+           navigateSafely(R.id.loginFragment)
         }
         dialog.show()
     }
@@ -202,7 +204,7 @@ class InvoiceFragment : Fragment() {
             val allowedToPayPrivetService =
                 !isInsurance && permissions.contains(Consts.PRIVET_SERVICE_PAY_PERMISSION)
             if (allowedToPayInsurance || allowedToPayPrivetService)
-                findNavController().navigate(
+               navigateSafely(
                     InvoiceFragmentDirections.actionInvoiceFragmentToPaymentMethodFragment(
                         /* paymentRequest = */ PaymentRequest(
                             discount = invoiceBuilder.extrasDto.discount,
