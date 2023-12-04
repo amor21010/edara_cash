@@ -43,7 +43,7 @@ class PaymentViewModel @Inject constructor(
         dataStore.data.collect { preferences ->
             val token = preferences[USER_TOKEN]
             try {
-                val result = if (isInsurance) privetServicePrintUseCase(
+                val result = if (!isInsurance) privetServicePrintUseCase(
                     servicesId, "bearer $token"
                 ) else insuranceServicePrintUseCase(servicesId, "bearer $token")
 

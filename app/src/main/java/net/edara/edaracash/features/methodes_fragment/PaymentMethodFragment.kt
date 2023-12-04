@@ -2,9 +2,7 @@ package net.edara.edaracash.features.methodes_fragment
 
 import android.app.AlertDialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +21,7 @@ import net.edara.edaracash.MainActivity
 import net.edara.edaracash.R
 import net.edara.edaracash.databinding.FragmentMethodBinding
 import net.edara.edaracash.features.dialogs.PaymentProssessDialogFragment
+import net.edara.edaracash.features.util.CommonUtils.isFawryPOS
 import net.edara.edaracash.navigateSafely
 
 @AndroidEntryPoint
@@ -66,9 +65,25 @@ class PaymentMethodFragment : Fragment() {
         binding.visa.setOnClickListener {
             pay(3)
         }
-        binding.fawry.setOnClickListener {
-            pay(5)
+        if (!isFawryPOS()) {
+            binding.fawryLogo.setImageResource(R.drawable.fawry_unactive)
 
+            binding.fawry.setBackgroundColor(
+                resources.getColor(
+                    R.color.md_theme_light_inverseOnSurface,
+                    null
+                )
+            )
+            binding.fawry.elevation = 2f
+
+        } else {
+            binding.fawry.elevation = 4f
+            binding.fawryLogo.setImageResource(R.drawable.fawry)
+
+            binding.fawry.setOnClickListener {
+                pay(5)
+
+            }
         }
         binding.transfer.setOnClickListener {
             pay(6)
@@ -203,18 +218,8 @@ class PaymentMethodFragment : Fragment() {
     private fun payWithFawry(
         total: Float, onSuccess: (fawryRefrance: String) -> Unit
     ) {
-        val isFawry by lazy {
-            val buildList = listOf(
-                Build.MANUFACTURER.uppercase(),
-                Build.BRAND.uppercase(),
-                Build.DEVICE.uppercase(),
-                Build.MODEL.uppercase(),
-                Build.PRODUCT.uppercase()
-            )
-            Log.d("TAG", "build: $buildList")
-            buildList.any { it.contains("FAWRY") }
-        }
-        if (isFawry)
+
+        if (isFawryPOS())
             (requireActivity() as MainActivity).fawryPay(
                 amount = total.toDouble(),
                 onSuccess = { fawryReference ->

@@ -1,6 +1,5 @@
 package net.edara.edaracash.features.home
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,9 +9,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
-import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import net.edara.edaracash.databinding.FragmentChooseOrderTypeBinding
+import net.edara.edaracash.features.util.CommonUtils.isFawryPOS
 import net.edara.edaracash.features.util.TokenUtils
 import net.edara.edaracash.models.Consts
 import net.edara.edaracash.navigateSafely
@@ -24,17 +23,7 @@ class ChooseOrderTypeFragment : Fragment() {
     lateinit var dataStore: DataStore<Preferences>
 
     private lateinit var binding: FragmentChooseOrderTypeBinding
-    private val isFawry by lazy {
-        val buildList = listOf(
-            Build.MANUFACTURER.uppercase(),
-            Build.BRAND.uppercase(),
-            Build.DEVICE.uppercase(),
-            Build.MODEL.uppercase(),
-            Build.PRODUCT.uppercase()
-        )
-        Log.d("TAG", "build: $buildList")
-        buildList.any { it.contains("FAWRY") }
-    }
+    private val isFawry by lazy {isFawryPOS()  }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -45,7 +34,6 @@ class ChooseOrderTypeFragment : Fragment() {
         binding.userName.text = user.fullname
         binding.userMail.text = user.email
         val userToken = TokenUtils.getUserJWT(token)
-
         Log.d("TAG", "build: $isFawry")
 
         dataStore.data.asLiveData().observe(viewLifecycleOwner) { data ->
@@ -57,11 +45,11 @@ class ChooseOrderTypeFragment : Fragment() {
                     binding.servicesFragment.isEnabled = true
                     binding.servicesFragment.visibility = View.VISIBLE
                     binding.servicesFragment.setOnClickListener {
-                        if (isFawry&&(username.isNullOrEmpty() || password.isNullOrEmpty())) {
-                           navigateSafely(ChooseOrderTypeFragmentDirections.actionChooseOrderTypeFragmentToFawryAuthFragment())
+                        if (isFawry && (username.isNullOrEmpty() || password.isNullOrEmpty())) {
+                            navigateSafely(ChooseOrderTypeFragmentDirections.actionChooseOrderTypeFragmentToFawryAuthFragment())
                             return@setOnClickListener
                         }
-                       navigateSafely(ChooseOrderTypeFragmentDirections.actionChooseOrderTypeFragmentToServicesFragment())
+                        navigateSafely(ChooseOrderTypeFragmentDirections.actionChooseOrderTypeFragmentToServicesFragment())
                     }
                 }
                 if (userToken.permissions.contains(Consts.INSURANCE_PERMISSION)) {

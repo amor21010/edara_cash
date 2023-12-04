@@ -1,10 +1,13 @@
 package net.edara.edaracash
 
 import android.app.Application
+import android.content.pm.PackageManager
+import androidx.fragment.app.Fragment
 import com.pax.dal.IDAL
 import com.pax.dal.IPrinter
 import com.pax.neptunelite.api.NeptuneLiteUser
 import dagger.hilt.android.HiltAndroidApp
+
 
 @HiltAndroidApp
 class EdaraCashApplication : Application() {

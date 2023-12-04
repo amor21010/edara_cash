@@ -1,7 +1,9 @@
 package net.edara.edaracash.models
 
+import android.content.pm.PackageManager
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.fragment.app.Fragment
 
 object Consts {
  val USER_TOKEN = stringPreferencesKey("Edara_Cash_Token")
@@ -16,4 +18,7 @@ object Consts {
  const val PRIVET_SERVICE_PRINT_PERMISSION=("PSRequest.FPOS.Print")
  const val PRIVET_SERVICE_PAY_PERMISSION=("PSRequest.FPOS.Pay")
  const val ALLOWED_ROLE=("POS-Financial")
+
+
 }
+

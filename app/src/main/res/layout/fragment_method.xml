@@ -49,6 +49,7 @@
                             android:layout_gravity="center"
                             android:layout_margin="@dimen/small_margin"
                             android:text="@string/cash"
+                            android:textColor="@color/dark_gray"
                             android:textAlignment="center"
                             android:textSize="@dimen/receipt_normal"
                             android:textStyle="bold" />
@@ -82,6 +83,7 @@
                             android:layout_gravity="center"
                             android:layout_margin="@dimen/small_margin"
                             android:text="@string/cheque"
+                            android:textColor="@color/dark_gray"
 
                             android:textAlignment="center"
                             android:textSize="@dimen/receipt_normal"
@@ -122,6 +124,7 @@
                             android:textAlignment="center"
                             android:textSize="@dimen/receipt_normal"
                             android:textStyle="bold"
+                            android:textColor="@color/dark_gray"
 
                             />
                     </LinearLayout>
@@ -144,12 +147,14 @@
                         android:orientation="vertical">
 
                         <ImageView
+                            android:id="@+id/fawryLogo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/other"
                             android:src="@drawable/fawry" />
 
                         <TextView
+                            android:id="@+id/fawry_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -158,6 +163,7 @@
                             android:textAlignment="center"
                             android:textSize="@dimen/receipt_normal"
                             android:textStyle="bold"
+                            android:textColor="@color/dark_gray"
 
                             />
                     </LinearLayout>
@@ -192,6 +198,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:textColor="@color/dark_gray"
 
                             android:layout_margin="@dimen/small_margin"
                             android:text="@string/bank_transfer"
@@ -232,6 +239,7 @@
                             android:textAlignment="center"
                             android:textSize="@dimen/receipt_normal"
                             android:textStyle="bold"
+                            android:textColor="@color/dark_gray"
 
                             />
                     </LinearLayout>
@@ -267,6 +275,8 @@
                             android:text="@string/insurance_settlement"
                             android:textAlignment="center"
                             android:textSize="@dimen/receipt_normal"
+                            android:textColor="@color/dark_gray"
+
                             android:textStyle="bold" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -303,6 +313,7 @@
                             android:text="@string/geidia"
                             android:textAlignment="center"
                             android:textSize="@dimen/receipt_normal"
+                            android:textColor="@color/dark_gray"
 
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -339,6 +350,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/small_margin"
+                            android:textColor="@color/dark_gray"
 
                             android:text="@string/other"
                             android:textAlignment="center"
@@ -354,6 +366,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="visible"
+
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

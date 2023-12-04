@@ -36,5 +36,7 @@
 
 
     </application>
-
+    <queries>
+        <package android:name="com.fawry.retailer"/>
+    </queries>
 </manifest>
