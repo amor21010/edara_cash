@@ -47,6 +47,7 @@ private const val RECEIPT_PRINT_REQUEST_CODE = 200
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    private var requestPointer: Int = -1
     private var isNavigationUpAllowed: Boolean = false
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -143,9 +144,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun fawryPay(
-       amount: Double, onSuccess: (transitionNo: String) -> Unit
+        amount: Double, requestPointer: Int, onSuccess: (transitionNo: String) -> Unit
     ) {
-
+        //prevent double calling
+        val isCalledBefore = requestPointer == this.requestPointer
+        this.requestPointer = requestPointer
+        Log.d(
+            "TAG",
+            "fawryPay: isCalledBefore: $isCalledBefore ,requestPointer: ${this.requestPointer},request:$requestPointer"
+        )
+        if (isCalledBefore) {
+            try {
+                navController.navigateUp()
+            } catch (e: Exception) {
+                Log.d("TAG", "fawryPay: ${e.message}")
+            }
+            return
+        }
         dataStore.data.asLiveData().observe(this@MainActivity) { data ->
             val username = data[FAWRY_USERNAME]
             val password = data[FAWRY_Password]

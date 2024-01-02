@@ -1,9 +1,10 @@
 package net.edara.domain.models.print
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
-import android.os.Parcelable
+import java.util.Random
 
 @Parcelize
 data class PrintResponse(
@@ -49,7 +50,8 @@ data class PrintResponse(
         @SerializedName("tax")
         val tax: String?,
         @SerializedName("unitNumber")
-        val unitNumber: String?
+        val unitNumber: String?,
+        val id: Int = Random().nextInt()
     ) : Parcelable {
         @Parcelize
         data class Request(

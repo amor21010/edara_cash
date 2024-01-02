@@ -32,6 +32,7 @@ class PaymentMethodFragment : Fragment() {
     private val dialog = PaymentProssessDialogFragment()
     lateinit var invoice: PrintResponse.Data
     private var isInsurance = false
+    private var isCalledBefore = false
     override fun onAttach(context: Context) {
         super.onAttach(context)
         paymentRequest = PaymentMethodFragmentArgs.fromBundle(requireArguments()).paymentRequest
@@ -65,16 +66,8 @@ class PaymentMethodFragment : Fragment() {
         binding.visa.setOnClickListener {
             pay(3)
         }
-        if (!isFawryPOS()) {
-            binding.fawryLogo.setImageResource(R.drawable.fawry_unactive)
-
-            binding.fawry.setBackgroundColor(
-                resources.getColor(
-                    R.color.md_theme_light_inverseOnSurface,
-                    null
-                )
-            )
-            binding.fawry.elevation = 2f
+        if (isFawryPOS()) {
+            disableFawry()
 
         } else {
             binding.fawry.elevation = 4f
@@ -82,7 +75,7 @@ class PaymentMethodFragment : Fragment() {
 
             binding.fawry.setOnClickListener {
                 pay(5)
-
+                disableFawry()
             }
         }
         binding.transfer.setOnClickListener {
@@ -151,6 +144,7 @@ class PaymentMethodFragment : Fragment() {
                         requireContext(), "Request Failed ${resultState.msg}", Toast.LENGTH_LONG
                     ).show()
                 }
+
                 else -> {
                     binding.layout.visibility = View.GONE
                     binding.progressBar.visibility = View.VISIBLE
@@ -162,13 +156,26 @@ class PaymentMethodFragment : Fragment() {
         return binding.root
     }
 
+    private fun disableFawry() {
+        binding.fawryLogo.setImageResource(R.drawable.fawry_unactive)
+
+        binding.fawry.setBackgroundColor(
+            resources.getColor(
+                R.color.md_theme_light_inverseOnSurface,
+                null
+            )
+        )
+        binding.fawry.setOnClickListener(null)
+        binding.fawry.elevation = 2f
+    }
+
     private fun showUnauthorizedDialog() {
         val dialog = AlertDialog.Builder(requireContext())
         dialog.setTitle("Session Expired")
         dialog.setMessage("Please Login Again")
         dialog.setCancelable(false)
         dialog.setPositiveButton("Login") { _, _ ->
-           navigateSafely(R.id.loginFragment)
+            navigateSafely(R.id.loginFragment)
         }
 
         dialog.setOnDismissListener {
@@ -219,13 +226,16 @@ class PaymentMethodFragment : Fragment() {
         total: Float, onSuccess: (fawryRefrance: String) -> Unit
     ) {
 
-        if (isFawryPOS())
+        if (isCalledBefore) return
+        if (isFawryPOS()) {
+            isCalledBefore = true
             (requireActivity() as MainActivity).fawryPay(
                 amount = total.toDouble(),
+                requestPointer = invoice.id,
                 onSuccess = { fawryReference ->
                     onSuccess(fawryReference)
                 })
-        else Toast.makeText(requireContext(), "this is not fawry pos", Toast.LENGTH_SHORT).show()
+        } else Toast.makeText(requireContext(), "this is not fawry pos", Toast.LENGTH_SHORT).show()
     }
 
 
